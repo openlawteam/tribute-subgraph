@@ -233,7 +233,7 @@ function couponOnboardingYAML({
 (function() {
   // Compile the solidity contracts
   console.log("📦 ### 1/3 Compiling the smart contracts...");
-  exec(`cd .. && truffle compile`);
+  exec(`npm run compile`);
 
   // Create the graph code generation files
   console.log("📦 ### 2/3 Creating the graph scheme...");
