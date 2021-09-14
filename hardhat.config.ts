@@ -44,9 +44,9 @@ const config = {
   },
   // https://hardhat.org/config/#path-configuration
   paths: {
-    tests: "./subgraph/subgraph-tests",
-    cache: "./subgraph/subgraph-tests/cache",
-    artifacts: "./subgraph/subgraph-tests/artifacts",
+    tests: "./tests",
+    cache: "./tests/cache",
+    artifacts: "./tests/artifacts",
   },
 };
 
