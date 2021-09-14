@@ -48,12 +48,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/openlawteam/tribute-contracts.git"
+    "url": "git+https://github.com/openlawteam/tribute-subgraph.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/openlawteam/tribute-contracts/issues"
+    "url": "https://github.com/openlawteam/tribute-subgraph/issues"
   },
-  "homepage": "https://github.com/openlawteam/tribute-contracts#readme"
+  "homepage": "https://github.com/openlawteam/tribute-subgraph#readme"
 }
