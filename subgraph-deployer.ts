@@ -5,7 +5,7 @@ import { config as dotenvConfig } from "dotenv";
 
 import subgraphConfig from "./config/subgraph-config.json";
 
-dotenvConfig({ path: resolve(__dirname, "../.env") });
+dotenvConfig({ path: resolve(__dirname, ".env") });
 
 type DeploySettings = {
   GITHUB_USERNAME?: string;
@@ -62,7 +62,7 @@ const getYAML = ({
           - TributeDao
         abis:
           - name: DaoFactory
-            file: ../build/contracts/DaoFactory.json
+            file: ./build/artifacts/build/contracts/core/DaoFactory.sol/DaoFactory.json
         eventHandlers:
           - event: DAOCreated(address,string)
             handler: handleDaoCreated
@@ -93,29 +93,29 @@ ${couponOnboardingYAML({
           - Vote
         abis:
           - name: DaoRegistry
-            file: ../build/contracts/DaoRegistry.json
+            file: ./build/artifacts/build/contracts/core/DaoRegistry.sol/DaoRegistry.json
           - name: OnboardingContract
-            file: ../build/contracts/OnboardingContract.json
+            file: ./build/artifacts/build/contracts/adapters/Onboarding.sol/OnboardingContract.json
           - name: DistributeContract
-            file: ../build/contracts/DistributeContract.json
+            file: ./build/artifacts/build/contracts/adapters/Distribute.sol/DistributeContract.json
           - name: TributeContract
-            file: ../build/contracts/TributeContract.json
+            file: ./build/artifacts/build/contracts/adapters/Tribute.sol/TributeContract.json
           - name: TributeNFTContract
-            file: ../build/contracts/TributeNFTContract.json
+            file: ./build/artifacts/build/contracts/adapters/TributeNFT.sol/TributeNFTContract.json
           - name: ManagingContract
-            file: ../build/contracts/ManagingContract.json
+            file: ./build/artifacts/build/contracts/adapters/Managing.sol/ManagingContract.json
           - name: GuildKickContract
-            file: ../build/contracts/GuildKickContract.json
+            file: ./build/artifacts/build/contracts/adapters/GuildKick.sol/GuildKickContract.json
           - name: FinancingContract
-            file: ../build/contracts/FinancingContract.json
+            file: ./build/artifacts/build/contracts/adapters/Financing.sol/FinancingContract.json
           - name: OffchainVotingContract
-            file: ../build/contracts/OffchainVotingContract.json
+            file: ./build/artifacts/build/contracts/adapters/voting/OffchainVoting.sol/OffchainVotingContract.json
           - name: VotingContract
-            file: ../build/contracts/VotingContract.json
+            file: ./build/artifacts/build/contracts/adapters/voting/Voting.sol/VotingContract.json
           - name: IVoting
-            file: ../build/contracts/IVoting.json
+            file: ./build/artifacts/build/contracts/adapters/interfaces/IVoting.sol/IVoting.json
           - name: ERC20Extension
-            file: ../build/contracts/ERC20Extension.json
+            file: ./build/artifacts/build/contracts/extensions/token/erc20/ERC20TokenExtension.sol/ERC20Extension.json
         eventHandlers:
           - event: SubmittedProposal(bytes32,uint256)
             handler: handleSubmittedProposal
@@ -154,11 +154,9 @@ ${couponOnboardingYAML({
           - Member
         abis:
           - name: BankExtension
-            file: ../build/contracts/BankExtension.json
-          - name: ERC20
-            file: ../build/contracts/ERC20.json
+            file: ./build/artifacts/build/contracts/extensions/bank/Bank.sol/BankExtension.json
           - name: ERC20Extension
-            file: ../build/contracts/ERC20Extension.json
+            file: ./build/artifacts/build/contracts/extensions/token/erc20/ERC20TokenExtension.sol/ERC20Extension.json
         eventHandlers:
           - event: NewBalance(address,address,uint160)
             handler: handleNewBalance
@@ -180,7 +178,7 @@ ${couponOnboardingYAML({
           - NFT
         abis:
           - name: NFTExtension
-            file: ../build/contracts/NFTExtension.json
+            file: ./build/artifacts/build/contracts/extensions/nft/NFT.sol/NFTExtension.json
         eventHandlers:
           - event: CollectedNFT(address,uint256)
             handler: handleCollectedNFT
@@ -224,7 +222,7 @@ function couponOnboardingYAML({
           - Coupon
         abis:
           - name: CouponOnboardingContract
-            file: ../build/contracts/CouponOnboardingContract.json
+            file: ./build/artifacts/build/contracts/adapters/CouponOnboarding.sol/CouponOnboardingContract.json
         eventHandlers:
           - event: CouponRedeemed(address,uint256,address,uint256)
             handler: handleCouponRedeemed
@@ -232,7 +230,7 @@ function couponOnboardingYAML({
   `;
 }
 
-(function () {
+(function() {
   // Compile the solidity contracts
   console.log("📦 ### 1/3 Compiling the smart contracts...");
   exec(`cd .. && truffle compile`);

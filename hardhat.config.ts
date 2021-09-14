@@ -1,6 +1,6 @@
 import { config as dotenvConfig } from "dotenv";
 import { resolve } from "path";
-dotenvConfig({ path: resolve(__dirname, "../.env") });
+dotenvConfig({ path: resolve(__dirname, ".env") });
 
 import "@nomiclabs/hardhat-waffle";
 import "hardhat-typechain";
@@ -44,9 +44,10 @@ const config = {
   },
   // https://hardhat.org/config/#path-configuration
   paths: {
-    tests: "./tests",
-    cache: "./tests/cache",
-    artifacts: "./tests/artifacts",
+    tests: "./test",
+    sources: "./build/contracts",
+    cache: "./build/cache",
+    artifacts: "./build/artifacts",
   },
 };
 

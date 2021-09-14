@@ -4,6 +4,18 @@
 
 ## Subgraph Setup
 
+To get started install the dependencies and compile the contracts:
+
+```
+npm ci && npm run compile
+```
+
+Then, you'll need to generate and build the source files:
+
+```
+graph codegen && graph build
+```
+
 You need to install Graph CLI with either npm or yarn.
 
 > Note: You need version 0.21.0 or above
