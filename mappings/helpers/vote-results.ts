@@ -71,10 +71,13 @@ export function loadProposalAndSaveVoteResults(
           }
         }
       } else if (votingAdapterName == "OffchainVotingContract") {
-        // @todo Need a way to import blockNumber of the upgraded
+        // @todo Need a way to import address of the upgraded
         // OffchainVotingContract (at tribute-contracts `v2.2.0`) so that it
         // does not have to be hardcoded here.
-        if (blockNumber.gt(BigInt.fromString("24082"))) {
+        if (
+          Address.fromString(votingAdapterAddress.toHex()) ==
+          Address.fromString("0xffe158C044bE67C06a869E7DE92F437934c799b1")
+        ) {
           let offchainVotingContract = OffchainVotingContract.bind(
             Address.fromString(votingAdapterAddress.toHex()) as Address
           );
