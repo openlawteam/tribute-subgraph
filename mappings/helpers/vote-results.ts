@@ -1,6 +1,7 @@
 import { Address, BigInt, Bytes, log } from "@graphprotocol/graph-ts";
 
 import { OffchainVotingContract } from "../../generated/templates/DaoRegistry/OffchainVotingContract";
+import { OffchainVotingContract_v1_0_0 } from "../../generated/templates/DaoRegistry/OffchainVotingContract_v1_0_0";
 import { VotingContract } from "../../generated/templates/DaoRegistry/VotingContract";
 import { IVoting } from "../../generated/templates/DaoRegistry/IVoting";
 
@@ -70,56 +71,96 @@ export function loadProposalAndSaveVoteResults(
           }
         }
       } else if (votingAdapterName == "OffchainVotingContract") {
-        let offchainVotingContract = OffchainVotingContract.bind(
-          Address.fromString(votingAdapterAddress.toHex()) as Address
-        );
-        // get vote results and state
-        let voteResults = offchainVotingContract.try_votes(
-          daoAddress,
-          proposalId
-        );
-        let voteState = offchainVotingContract.voteResult(
-          daoAddress,
-          proposalId
-        );
+        // @todo Need a way to import blockNumber of the upgraded
+        // OffchainVotingContract (at tribute-contracts `v2.2.0`) so that it
+        // does not have to be hardcoded here.
+        if (blockNumber.gt(BigInt.fromString("24082"))) {
+          let offchainVotingContract = OffchainVotingContract.bind(
+            Address.fromString(votingAdapterAddress.toHex()) as Address
+          );
+          // get vote results and state
+          let voteResults = offchainVotingContract.try_votes(
+            daoAddress,
+            proposalId
+          );
+          let voteState = offchainVotingContract.voteResult(
+            daoAddress,
+            proposalId
+          );
 
-        if (voteResults.reverted) {
-          log.info("OffchainVotingContract try_votes reverted, {}", [
-            blockNumber.toString(),
-          ]);
-        } else {
-          // assign voting data
-          vote.nbYes = voteResults.value.value3;
-          vote.nbNo = voteResults.value.value4;
+          if (voteResults.reverted) {
+            log.info("OffchainVotingContract try_votes reverted, {}", [
+              blockNumber.toString(),
+            ]);
+          } else {
+            // assign voting data
+            vote.nbYes = voteResults.value.value3;
+            vote.nbNo = voteResults.value.value4;
 
-          vote.proposal = maybeProposalId;
+            vote.proposal = maybeProposalId;
 
-          if (proposal) {
-            proposal.snapshot = voteResults.value.value0;
-            proposal.reporter = voteResults.value.value1;
-            proposal.resultRoot = voteResults.value.value2;
+            if (proposal) {
+              proposal.snapshot = voteResults.value.value0;
+              proposal.reporter = voteResults.value.value1;
+              proposal.resultRoot = voteResults.value.value2;
 
-            proposal.nbYes = voteResults.value.value3;
-            proposal.nbNo = voteResults.value.value4;
+              proposal.nbYes = voteResults.value.value3;
+              proposal.nbNo = voteResults.value.value4;
 
-            proposal.startingTime = voteResults.value.value5;
-            proposal.gracePeriodStartingTime = voteResults.value.value6;
-            proposal.isChallenged = voteResults.value.value7;
-
-            // @todo Need a way to import blockNumber of the upgraded
-            // OffchainVotingContract so that it does not have to be hardcoded
-            // here.
-            if (blockNumber.gt(BigInt.fromString("24082"))) {
+              proposal.startingTime = voteResults.value.value5;
+              proposal.gracePeriodStartingTime = voteResults.value.value6;
+              proposal.isChallenged = voteResults.value.value7;
               proposal.stepRequested = voteResults.value.value8;
               proposal.forceFailed = voteResults.value.value9;
               proposal.fallbackVotesCount = voteResults.value.value10;
-            } else {
+
+              proposal.votingState = voteState.toString();
+              proposal.votingResult = voteId;
+            }
+          }
+        } else {
+          // OffchainVotingContract at tribute-contracts `v1.0.0`
+          let offchainVotingContract = OffchainVotingContract_v1_0_0.bind(
+            Address.fromString(votingAdapterAddress.toHex()) as Address
+          );
+          // get vote results and state
+          let voteResults = offchainVotingContract.try_votes(
+            daoAddress,
+            proposalId
+          );
+          let voteState = offchainVotingContract.voteResult(
+            daoAddress,
+            proposalId
+          );
+
+          if (voteResults.reverted) {
+            log.info("OffchainVotingContract try_votes reverted, {}", [
+              blockNumber.toString(),
+            ]);
+          } else {
+            // assign voting data
+            vote.nbYes = voteResults.value.value3;
+            vote.nbNo = voteResults.value.value4;
+
+            vote.proposal = maybeProposalId;
+
+            if (proposal) {
+              proposal.snapshot = voteResults.value.value0;
+              proposal.reporter = voteResults.value.value1;
+              proposal.resultRoot = voteResults.value.value2;
+
+              proposal.nbYes = voteResults.value.value3;
+              proposal.nbNo = voteResults.value.value4;
+
+              proposal.startingTime = voteResults.value.value5;
+              proposal.gracePeriodStartingTime = voteResults.value.value6;
+              proposal.isChallenged = voteResults.value.value7;
               proposal.forceFailed = voteResults.value.value8;
               proposal.fallbackVotesCount = voteResults.value.value9;
-            }
 
-            proposal.votingState = voteState.toString();
-            proposal.votingResult = voteId;
+              proposal.votingState = voteState.toString();
+              proposal.votingResult = voteId;
+            }
           }
         }
       }

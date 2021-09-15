@@ -62,6 +62,8 @@ templates:
           file: ./build/artifacts/build/contracts/adapters/Financing.sol/FinancingContract.json
         - name: OffchainVotingContract
           file: ./build/artifacts/build/contracts/adapters/voting/OffchainVoting.sol/OffchainVotingContract.json
+        - name: OffchainVotingContract_v1_0_0
+          file: ./old_contracts/v1_0_0/OffchainVotingContract.json
         - name: VotingContract
           file: ./build/artifacts/build/contracts/adapters/voting/Voting.sol/VotingContract.json
         - name: IVoting
