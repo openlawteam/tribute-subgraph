@@ -2,19 +2,7 @@
 
 > Graph definition for the Tribute DAO Framework
 
-## Subgraph Setup
-
-To get started install the dependencies and compile the contracts:
-
-```
-npm ci && npm run compile
-```
-
-Then, you'll need to generate and build the source files:
-
-```
-graph codegen && graph build
-```
+## Installation Setup
 
 You need to install Graph CLI with either npm or yarn.
 
@@ -30,6 +18,20 @@ Yarn Install:
 
 ```
 yarn global add @graphprotocol/graph-cli
+```
+
+## Subgraph Setup
+
+To get started install the dependencies and compile the contracts:
+
+```
+npm ci && npm run compile
+```
+
+Then, you'll need to generate and build the source files:
+
+```
+graph codegen && graph build
 ```
 
 ### Multiple Ethereum Networks Setup

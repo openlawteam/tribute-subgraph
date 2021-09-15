@@ -148,8 +148,8 @@ type Proposal @entity {
 type Vote @entity {
   "Unique identifier and primary key of the `Vote` entity"
   id: ID! # Set to `${tribute.id}-vote-${proposal.id}`
-  nbNo: BigInt!
-  nbYes: BigInt!
+  nbNo: BigInt
+  nbYes: BigInt
   adapterName: VotingAdapterName!
   adapterAddress: Bytes!
   proposal: Proposal

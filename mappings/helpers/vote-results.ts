@@ -1,4 +1,4 @@
-import { Address, Bytes, log } from "@graphprotocol/graph-ts";
+import { Address, BigInt, Bytes, log } from "@graphprotocol/graph-ts";
 
 import { OffchainVotingContract } from "../../generated/templates/DaoRegistry/OffchainVotingContract";
 import { VotingContract } from "../../generated/templates/DaoRegistry/VotingContract";
@@ -8,7 +8,8 @@ import { Proposal, Vote } from "../../generated/schema";
 
 export function loadProposalAndSaveVoteResults(
   daoAddress: Address,
-  proposalId: Bytes
+  proposalId: Bytes,
+  blockNumber: BigInt
 ): Proposal | null {
   // load the existing proposal
   let maybeProposalId = daoAddress
@@ -18,8 +19,15 @@ export function loadProposalAndSaveVoteResults(
   let proposal = Proposal.load(maybeProposalId);
 
   if (proposal) {
-    let voteId = daoAddress.toHex().concat("-vote-").concat(proposalId.toHex());
+    let voteId = daoAddress
+      .toHex()
+      .concat("-vote-")
+      .concat(proposalId.toHex());
     let vote = new Vote(voteId);
+
+    // set initial vote values - to prevent this breaking during sync
+    vote.nbNo = BigInt.fromI32(0);
+    vote.nbYes = BigInt.fromI32(0);
 
     // get the voting adapter address from the proposal
     let votingAdapterAddress: Bytes = proposal.votingAdapter as Bytes;
@@ -85,11 +93,11 @@ export function loadProposalAndSaveVoteResults(
           proposal.startingTime = voteResults.value5;
           proposal.gracePeriodStartingTime = voteResults.value6;
           proposal.isChallenged = voteResults.value7;
-          proposal.stepRequested = voteResults.value8;
+          // proposal.stepRequested = voteResults.value.value8;
           // @todo its a mapping, not generated in schema
           // proposal.fallbackVotes = voteResults.value10;
-          proposal.forceFailed = voteResults.value9;
-          proposal.fallbackVotesCount = voteResults.value10;
+          // proposal.forceFailed = voteResults.value.value9;
+          // proposal.fallbackVotesCount = voteResults.value.value10;
 
           proposal.votingState = voteState.toString();
           proposal.votingResult = voteId;

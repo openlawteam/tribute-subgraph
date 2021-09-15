@@ -98,6 +98,7 @@ export function handleSponsoredProposal(event: SponsoredProposal): void {
 
 export function handleProcessedProposal(event: ProcessedProposal): void {
   let processedAt = event.block.timestamp.toString();
+  let blockNumber = event.block.number;
 
   log.info("=============== ProcessedProposal event fired. proposalId: {}", [
     event.params.proposalId.toHexString(),
@@ -105,7 +106,8 @@ export function handleProcessedProposal(event: ProcessedProposal): void {
 
   let proposal = loadProposalAndSaveVoteResults(
     event.address,
-    event.params.proposalId
+    event.params.proposalId,
+    blockNumber
   );
 
   if (proposal) {
