@@ -25,10 +25,6 @@ export function loadProposalAndSaveVoteResults(
       .concat(proposalId.toHex());
     let vote = new Vote(voteId);
 
-    // set initial vote values - to prevent this breaking during sync
-    vote.nbNo = BigInt.fromI32(0);
-    vote.nbYes = BigInt.fromI32(0);
-
     // get the voting adapter address from the proposal
     let votingAdapterAddress: Bytes = proposal.votingAdapter as Bytes;
 
@@ -38,69 +34,86 @@ export function loadProposalAndSaveVoteResults(
       );
       let votingAdapterName = votingIContract.getAdapterName();
 
+      // set initial vote values - to prevent this breaking during sync
+      vote.nbNo = BigInt.fromI32(0);
+      vote.nbYes = BigInt.fromI32(0);
+      vote.adapterName = votingAdapterName;
+      vote.adapterAddress = votingAdapterAddress;
+
       if (votingAdapterName == "VotingContract") {
         let votingContract = VotingContract.bind(
           Address.fromString(votingAdapterAddress.toHex()) as Address
         );
         // get vote results and voting state
-        let voteResults = votingContract.votes(daoAddress, proposalId);
+        let voteResults = votingContract.try_votes(daoAddress, proposalId);
         let voteState = votingContract.voteResult(daoAddress, proposalId);
 
-        // assign voting data
-        vote.nbYes = voteResults.value0;
-        vote.nbNo = voteResults.value1;
+        if (voteResults.reverted) {
+          log.info("VotingContract try_votes reverted, {}", [
+            blockNumber.toString(),
+          ]);
+        } else {
+          // assign voting data
+          vote.nbYes = voteResults.value.value0;
+          vote.nbNo = voteResults.value.value1;
 
-        vote.adapterName = votingAdapterName;
-        vote.adapterAddress = votingAdapterAddress;
-        vote.proposal = maybeProposalId;
+          vote.proposal = maybeProposalId;
 
-        if (proposal) {
-          proposal.nbYes = voteResults.value0;
-          proposal.nbNo = voteResults.value1;
-          proposal.startingTime = voteResults.value2;
-          proposal.blockNumber = voteResults.value3;
+          if (proposal) {
+            proposal.nbYes = voteResults.value.value0;
+            proposal.nbNo = voteResults.value.value1;
+            proposal.startingTime = voteResults.value.value2;
+            proposal.blockNumber = voteResults.value.value3;
 
-          proposal.votingState = voteState.toString();
-          proposal.votingResult = voteId;
+            proposal.votingState = voteState.toString();
+            proposal.votingResult = voteId;
+          }
         }
       } else if (votingAdapterName == "OffchainVotingContract") {
         let offchainVotingContract = OffchainVotingContract.bind(
           Address.fromString(votingAdapterAddress.toHex()) as Address
         );
         // get vote results and state
-        let voteResults = offchainVotingContract.votes(daoAddress, proposalId);
+        let voteResults = offchainVotingContract.try_votes(
+          daoAddress,
+          proposalId
+        );
         let voteState = offchainVotingContract.voteResult(
           daoAddress,
           proposalId
         );
 
-        // assign voting data
-        vote.nbYes = voteResults.value3;
-        vote.nbNo = voteResults.value4;
+        if (voteResults.reverted) {
+          log.info("OffchainVotingContract try_votes reverted, {}", [
+            blockNumber.toString(),
+          ]);
+        } else {
+          // assign voting data
+          vote.nbYes = voteResults.value.value3;
+          vote.nbNo = voteResults.value.value4;
 
-        vote.adapterName = votingAdapterName;
-        vote.adapterAddress = votingAdapterAddress;
-        vote.proposal = maybeProposalId;
+          vote.proposal = maybeProposalId;
 
-        if (proposal) {
-          proposal.snapshot = voteResults.value0;
-          proposal.reporter = voteResults.value1;
-          proposal.resultRoot = voteResults.value2;
+          if (proposal) {
+            proposal.snapshot = voteResults.value.value0;
+            proposal.reporter = voteResults.value.value1;
+            proposal.resultRoot = voteResults.value.value2;
 
-          proposal.nbYes = voteResults.value3;
-          proposal.nbNo = voteResults.value4;
+            proposal.nbYes = voteResults.value.value3;
+            proposal.nbNo = voteResults.value.value4;
 
-          proposal.startingTime = voteResults.value5;
-          proposal.gracePeriodStartingTime = voteResults.value6;
-          proposal.isChallenged = voteResults.value7;
-          // proposal.stepRequested = voteResults.value.value8;
-          // @todo its a mapping, not generated in schema
-          // proposal.fallbackVotes = voteResults.value10;
-          // proposal.forceFailed = voteResults.value.value9;
-          // proposal.fallbackVotesCount = voteResults.value.value10;
+            proposal.startingTime = voteResults.value.value5;
+            proposal.gracePeriodStartingTime = voteResults.value.value6;
+            proposal.isChallenged = voteResults.value.value7;
+            // proposal.stepRequested = voteResults.value.value8;
+            // @todo its a mapping, not generated in schema
+            // proposal.fallbackVotes = voteResults.value10;
+            // proposal.forceFailed = voteResults.value.value9;
+            // proposal.fallbackVotesCount = voteResults.value.value10;
 
-          proposal.votingState = voteState.toString();
-          proposal.votingResult = voteId;
+            proposal.votingState = voteState.toString();
+            proposal.votingResult = voteId;
+          }
         }
       }
     }
