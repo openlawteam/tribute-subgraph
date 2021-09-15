@@ -105,11 +105,8 @@ export function loadProposalAndSaveVoteResults(
             proposal.startingTime = voteResults.value.value5;
             proposal.gracePeriodStartingTime = voteResults.value.value6;
             proposal.isChallenged = voteResults.value.value7;
-            // proposal.stepRequested = voteResults.value.value8;
-            // @todo its a mapping, not generated in schema
-            // proposal.fallbackVotes = voteResults.value10;
-            // proposal.forceFailed = voteResults.value.value9;
-            // proposal.fallbackVotesCount = voteResults.value.value10;
+            proposal.forceFailed = voteResults.value.value8;
+            proposal.fallbackVotesCount = voteResults.value.value9;
 
             proposal.votingState = voteState.toString();
             proposal.votingResult = voteId;
