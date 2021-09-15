@@ -105,8 +105,9 @@ export function loadProposalAndSaveVoteResults(
             proposal.startingTime = voteResults.value.value5;
             proposal.gracePeriodStartingTime = voteResults.value.value6;
             proposal.isChallenged = voteResults.value.value7;
-            proposal.forceFailed = voteResults.value.value8;
-            proposal.fallbackVotesCount = voteResults.value.value9;
+            proposal.stepRequested = voteResults.value.value8;
+            proposal.forceFailed = voteResults.value.value9;
+            proposal.fallbackVotesCount = voteResults.value.value10;
 
             proposal.votingState = voteState.toString();
             proposal.votingResult = voteId;
