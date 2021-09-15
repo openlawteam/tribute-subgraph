@@ -60,5 +60,11 @@
   "bugs": {
     "url": "https://github.com/openlawteam/tribute-subgraph/issues"
   },
-  "homepage": "https://github.com/openlawteam/tribute-subgraph#readme"
+  "homepage": "https://github.com/openlawteam/tribute-subgraph#readme",
+  "np": {
+    "branch": "main",
+    "yolo": true,
+    "yarn": false,
+    "publish": false
+  }
 }
