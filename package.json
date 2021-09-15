@@ -14,7 +14,7 @@
     "ganache-cli": "^6.12.1",
     "hardhat-typechain": "^0.3.5",
     "keccak256": "^1.0.0",
-    "tribute-contracts": "^2.0.0",
+    "tribute-contracts": "^1.0.1",
     "truffle": "^5.2.6",
     "ts-generator": "^0.1.1",
     "typechain": "^4.0.3",
@@ -36,6 +36,7 @@
     "ethereum-waffle": "^3.3.0",
     "ethers": "^5.1.0",
     "hardhat": "^2.1.1",
+    "np": "^7.5.0",
     "rimraf": "^3.0.2",
     "ts-node": "^9.1.1"
   },
@@ -47,7 +48,8 @@
     "ganache": "node_modules/.bin/ganache-cli -s=test -g=0 --secure -u 0 -u 1 -p 7545 --networkId 1337",
     "codegen": "graph codegen",
     "build": "graph build",
-    "compile": "rimraf build && mkdir -p build/contracts && cp -r node_modules/tribute-contracts/contracts/** build/contracts && hardhat compile"
+    "compile": "rimraf build && mkdir -p build/contracts && cp -r node_modules/tribute-contracts/contracts/** build/contracts && hardhat compile",
+    "release": "np"
   },
   "repository": {
     "type": "git",
