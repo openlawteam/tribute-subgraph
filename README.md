@@ -2,7 +2,7 @@
 
 > Graph definition for the Tribute DAO Framework
 
-## Installation Setup
+## Graph CLI Installation
 
 You need to install Graph CLI with either npm or yarn.
 
