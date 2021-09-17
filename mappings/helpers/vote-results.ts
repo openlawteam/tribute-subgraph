@@ -78,7 +78,9 @@ export function loadProposalAndSaveVoteResults(
           Address.fromString(votingAdapterAddress.toHex()) ==
           Address.fromString("0xffe158C044bE67C06a869E7DE92F437934c799b1")
         ) {
-          log.debug("*********** NEWER OffchainVotingContract", []);
+          log.debug("*********** NEWER OffchainVotingContract, {}", [
+            votingAdapterAddress.toHex(),
+          ]);
 
           let offchainVotingContract = OffchainVotingContract.bind(
             Address.fromString(votingAdapterAddress.toHex()) as Address
@@ -124,7 +126,9 @@ export function loadProposalAndSaveVoteResults(
             }
           }
         } else {
-          log.debug("*********** OLDER OffchainVotingContract", []);
+          log.debug("*********** OLDER OffchainVotingContract, {}", [
+            votingAdapterAddress.toHex(),
+          ]);
 
           // OffchainVotingContract at tribute-contracts `v1.0.0`
           let offchainVotingContract = OffchainVotingContract_v1_0_0.bind(
