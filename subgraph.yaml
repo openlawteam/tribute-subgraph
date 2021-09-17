@@ -56,6 +56,8 @@ templates:
           file: ./build/artifacts/build/contracts/adapters/TributeNFT.sol/TributeNFTContract.json
         - name: ManagingContract
           file: ./build/artifacts/build/contracts/adapters/Managing.sol/ManagingContract.json
+        - name: ManagingContract_v1_0_0
+          file: ./old_contracts/v1_0_0/ManagingContract.json
         - name: GuildKickContract
           file: ./build/artifacts/build/contracts/adapters/GuildKick.sol/GuildKickContract.json
         - name: FinancingContract

@@ -119,6 +119,8 @@ type Proposal @entity {
 
   # MANAGING; proposal details
   "Additional details for the managing proposal"
+  adapterOrExtensionId: Bytes
+  adapterOrExtensionAddr: Bytes
   keys: [Bytes!]
   values: [BigInt!]
 

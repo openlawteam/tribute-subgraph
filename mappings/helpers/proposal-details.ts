@@ -4,6 +4,7 @@ import { DistributeContract } from "../../generated/templates/DaoRegistry/Distri
 import { OnboardingContract } from "../../generated/templates/DaoRegistry/OnboardingContract";
 import { TributeContract } from "../../generated/templates/DaoRegistry/TributeContract";
 import { ManagingContract } from "../../generated/templates/DaoRegistry/ManagingContract";
+import { ManagingContract_v1_0_0 } from "../../generated/templates/DaoRegistry/ManagingContract_v1_0_0";
 import { FinancingContract } from "../../generated/templates/DaoRegistry/FinancingContract";
 import { GuildKickContract } from "../../generated/templates/DaoRegistry/GuildKickContract";
 import { TributeNFTContract } from "../../generated/templates/DaoRegistry/TributeNFTContract";
@@ -153,44 +154,89 @@ function managing(
   daoAddress: Address,
   proposalId: Bytes
 ): void {
-  let managing = ManagingContract.bind(adapterAdddress);
+  if (
+    adapterAdddress ==
+    Address.fromString("0xa1D291C3123e148b16118447c65bb7049f9135FA")
+  ) {
+    let managing = ManagingContract.bind(adapterAdddress);
 
-  let data = managing.proposals(
-    Address.fromString(daoAddress.toHexString()),
-    proposalId
-  );
+    let data = managing.proposals(
+      Address.fromString(daoAddress.toHexString()),
+      proposalId
+    );
 
-  let daoProposalId = daoAddress
-    .toHex()
-    .concat("-proposal-")
-    .concat(proposalId.toHex());
+    let daoProposalId = daoAddress
+      .toHex()
+      .concat("-proposal-")
+      .concat(proposalId.toHex());
 
-  let proposal = Proposal.load(daoProposalId);
+    let proposal = Proposal.load(daoProposalId);
 
-  if (proposal) {
-    proposal.adapterId = data.value0;
-    proposal.adapterAddress = data.value1;
+    if (proposal) {
+      proposal.adapterOrExtensionId = data.value0;
+      proposal.adapterOrExtensionAddr = data.value1;
 
-    proposal.adapterAddress = adapterAdddress;
+      proposal.adapterOrExtensionAddr = adapterAdddress;
 
-    // @todo
-    // let keys: Bytes[] = [];
-    // for (let i = 0; i < data.value2.length; i++) {
-    //   keys.push(data.value2[i]);
-    // }
-    // proposal.keys = keys; //data.value2;
+      // @todo
+      // let keys: Bytes[] = [];
+      // for (let i = 0; i < data.value2.length; i++) {
+      //   keys.push(data.value2[i]);
+      // }
+      // proposal.keys = keys; //data.value2;
 
-    // @todo
-    // let values = [];
-    // for (let i = 0; i < data.value3.length; i++) {
-    //   values.push(data.value3[i]);
-    // }
+      // @todo
+      // let values = [];
+      // for (let i = 0; i < data.value3.length; i++) {
+      //   values.push(data.value3[i]);
+      // }
 
-    // proposal.values = values; //data.value3;
-    // @todo
-    // proposal.flags = data.value4;
+      // proposal.values = values; //data.value3;
+      // @todo
+      // proposal.flags = data.value4;
 
-    proposal.save();
+      proposal.save();
+    }
+  } else {
+    let managing = ManagingContract_v1_0_0.bind(adapterAdddress);
+
+    let data = managing.proposals(
+      Address.fromString(daoAddress.toHexString()),
+      proposalId
+    );
+
+    let daoProposalId = daoAddress
+      .toHex()
+      .concat("-proposal-")
+      .concat(proposalId.toHex());
+
+    let proposal = Proposal.load(daoProposalId);
+
+    if (proposal) {
+      proposal.adapterId = data.value0;
+      proposal.adapterAddress = data.value1;
+
+      proposal.adapterAddress = adapterAdddress;
+
+      // @todo
+      // let keys: Bytes[] = [];
+      // for (let i = 0; i < data.value2.length; i++) {
+      //   keys.push(data.value2[i]);
+      // }
+      // proposal.keys = keys; //data.value2;
+
+      // @todo
+      // let values = [];
+      // for (let i = 0; i < data.value3.length; i++) {
+      //   values.push(data.value3[i]);
+      // }
+
+      // proposal.values = values; //data.value3;
+      // @todo
+      // proposal.flags = data.value4;
+
+      proposal.save();
+    }
   }
 }
 
