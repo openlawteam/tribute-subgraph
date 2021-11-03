@@ -36,12 +36,12 @@ dataSources:
         #   file: ./build/artifacts/build/contracts/adapters/GuildKick.sol/GuildKickContract.json
         # - name: FinancingContract
         #   file: ./build/artifacts/build/contracts/adapters/Financing.sol/FinancingContract.json
-        # - name: OffchainVotingContract
-        #   file: ./build/artifacts/build/contracts/adapters/voting/OffchainVoting.sol/OffchainVotingContract.json
-        # - name: VotingContract
-        #   file: ./build/artifacts/build/contracts/adapters/voting/Voting.sol/VotingContract.json
-        # - name: IVoting
-        #   file: ./build/artifacts/build/contracts/adapters/interfaces/IVoting.sol/IVoting.json
+        - name: OffchainVotingContract
+          file: ./build/artifacts/build/contracts/adapters/voting/OffchainVoting.sol/OffchainVotingContract.json
+        - name: VotingContract
+          file: ./build/artifacts/build/contracts/adapters/voting/Voting.sol/VotingContract.json
+        - name: IVoting
+          file: ./build/artifacts/build/contracts/adapters/interfaces/IVoting.sol/IVoting.json
         # - name: ERC20Extension
         #   file: ./build/artifacts/build/contracts/extensions/token/erc20/ERC20TokenExtension.sol/ERC20Extension.json
       eventHandlers:
@@ -65,4 +65,4 @@ dataSources:
           handler: handleConfigurationUpdated
         - event: AddressConfigurationUpdated(bytes32,address)
           handler: handleAddressConfigurationUpdated
-      file: ./mappings/core/dao-registry-mapping.ts
+      file: ./dao-registry-mapping.ts
