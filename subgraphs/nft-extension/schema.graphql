@@ -1,0 +1,16 @@
+type NFT @entity {
+  "Unique identifier and primary key of the `NFT` entity"
+  id: ID! # Set to `${tribute.id}-nft-${nftAddress.id}-$tokenId}`
+  nftAddress: Bytes!
+  tokenId: BigInt!
+  from: Bytes
+  to: Bytes
+  nftCollection: NFTCollection
+}
+
+type NFTCollection @entity {
+  "Unique identifier and primary key of the `NFTCollection` entity"
+  id: ID! # Set to `${tribute.id}-nftcollection-${extensionAddress}`
+  nfts: [NFT!] @derivedFrom(field: "nftCollection")
+  tributeDao: TributeDao!
+}

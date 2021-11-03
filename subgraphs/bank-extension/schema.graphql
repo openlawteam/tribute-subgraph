@@ -1,0 +1,39 @@
+type Member @entity {
+  "Unique identifier and primary key of the `Member` entity"
+  id: ID! # Set to `${member.id}`
+  memberAddress: Bytes
+  createdAt: String
+  delegateKey: Bytes
+  units: BigInt!
+  tokenHoldings: [TokenHolder!] @derivedFrom(field: "member")
+  proposals: [Proposal!] @derivedFrom(field: "member")
+  didFullyRagequit: Boolean
+  isDelegated: Boolean
+  "List of DAOs the member belongs to"
+  tributeDaos: [TributeDao!]!
+}
+
+type Bank @entity {
+  "Unique identifier and primary key of the `Bank` entity"
+  id: ID! # Set to `${tribute.id}-bank-${bank.id}`
+  "The bank of the DAO"
+  bankAddress: Bytes!
+  tributeDao: TributeDao!
+}
+
+type Token @entity {
+  "Unique identifier and primary key of the `Token` entity"
+  id: ID! # Set to `${tribute.id}-token-${token.id}`
+  name: String
+  symbol: String
+  tokenAddress: Bytes!
+  totalSupply: BigInt
+  holders: [TokenHolder!] @derivedFrom(field: "token")
+}
+
+type TokenHolder @entity {
+  id: ID! # Set to `${tribute.id}-tokenholder-${memberAddress.id}`
+  member: Member
+  balance: BigInt
+  token: Token #`${tribute.id}-token-${token.id}`
+}

@@ -1,0 +1,27 @@
+specVersion: 0.0.2
+description: Tribute DAO Framework Subgraph (CouponOnboarding)
+repository: https://github.com/openlawteam/tribute-subgraph
+schema:
+  file: ./schema.graphql
+dataSources:
+  # ====================================== DaoFactory ====================================
+  - kind: ethereum/contract
+    name: CouponOnboarding
+    network: mainnet
+    source:
+      address: "0x7f51bAf0159De2951aA0C48b55169aE4Deba89d6"
+      abi: CouponOnboarding
+      startBlock: 13
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      entities:
+        - Coupon
+      abis:
+        - name: CouponOnboarding
+          file: ./build/artifacts/build/contracts/core/DaoFactory.sol/DaoFactory.json
+      eventHandlers:
+        - event: DAOCreated(address,string)
+          handler: handleDaoCreated
+      file: ./coupon-onboarding-mapping.ts

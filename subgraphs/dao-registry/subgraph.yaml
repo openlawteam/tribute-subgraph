@@ -1,0 +1,68 @@
+specVersion: 0.0.2
+description: Tribute DAO Framework Subgraph
+repository: https://github.com/openlawteam/tribute-subgraph
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum/contract
+    name: DaoRegistry
+    network: mainnet
+    source:
+      abi: DaoRegistry
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      entities:
+        - Adapter
+        - Extension
+        - Proposal
+        - Member
+        - Vote
+      abis:
+        - name: DaoRegistry
+          file: ./build/artifacts/build/contracts/core/DaoRegistry.sol/DaoRegistry.json
+        # - name: OnboardingContract
+        #   file: ./build/artifacts/build/contracts/adapters/Onboarding.sol/OnboardingContract.json
+        # - name: DistributeContract
+        #   file: ./build/artifacts/build/contracts/adapters/Distribute.sol/DistributeContract.json
+        # - name: TributeContract
+        #   file: ./build/artifacts/build/contracts/adapters/Tribute.sol/TributeContract.json
+        # - name: TributeNFTContract
+        #   file: ./build/artifacts/build/contracts/adapters/TributeNFT.sol/TributeNFTContract.json
+        # - name: ManagingContract
+        #   file: ./build/artifacts/build/contracts/adapters/Managing.sol/ManagingContract.json
+        # - name: GuildKickContract
+        #   file: ./build/artifacts/build/contracts/adapters/GuildKick.sol/GuildKickContract.json
+        # - name: FinancingContract
+        #   file: ./build/artifacts/build/contracts/adapters/Financing.sol/FinancingContract.json
+        # - name: OffchainVotingContract
+        #   file: ./build/artifacts/build/contracts/adapters/voting/OffchainVoting.sol/OffchainVotingContract.json
+        # - name: VotingContract
+        #   file: ./build/artifacts/build/contracts/adapters/voting/Voting.sol/VotingContract.json
+        # - name: IVoting
+        #   file: ./build/artifacts/build/contracts/adapters/interfaces/IVoting.sol/IVoting.json
+        # - name: ERC20Extension
+        #   file: ./build/artifacts/build/contracts/extensions/token/erc20/ERC20TokenExtension.sol/ERC20Extension.json
+      eventHandlers:
+        - event: SubmittedProposal(bytes32,uint256)
+          handler: handleSubmittedProposal
+        - event: SponsoredProposal(bytes32,uint256,address)
+          handler: handleSponsoredProposal
+        - event: ProcessedProposal(bytes32,uint256)
+          handler: handleProcessedProposal
+        - event: AdapterAdded(bytes32,address,uint256)
+          handler: handleAdapterAdded
+        - event: AdapterRemoved(bytes32)
+          handler: handleAdapterRemoved
+        - event: ExtensionAdded(bytes32,address)
+          handler: handleExtensionAdded
+        - event: ExtensionRemoved(bytes32)
+          handler: handleExtensionRemoved
+        - event: UpdateDelegateKey(address,address)
+          handler: handleUpdateDelegateKey
+        - event: ConfigurationUpdated(bytes32,uint256)
+          handler: handleConfigurationUpdated
+        - event: AddressConfigurationUpdated(bytes32,address)
+          handler: handleAddressConfigurationUpdated
+      file: ./mappings/core/dao-registry-mapping.ts
