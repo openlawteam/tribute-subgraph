@@ -28,4 +28,4 @@ dataSources:
           handler: handleTransferredNFT
         - event: WithdrawnNFT(address,uint256,address)
           handler: handleWithdrawnNFT
-      file: ./nft-extension-mapping.ts
+      file: ./mapping.ts

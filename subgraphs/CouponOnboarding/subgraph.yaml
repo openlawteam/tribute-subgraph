@@ -24,4 +24,4 @@ dataSources:
       eventHandlers:
         - event: DAOCreated(address,string)
           handler: handleDaoCreated
-      file: ./coupon-onboarding-mapping.ts
+      file: ./mapping.ts

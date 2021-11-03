@@ -65,4 +65,4 @@ dataSources:
           handler: handleConfigurationUpdated
         - event: AddressConfigurationUpdated(bytes32,address)
           handler: handleAddressConfigurationUpdated
-      file: ./dao-registry-mapping.ts
+      file: ./mapping.ts

@@ -31,4 +31,4 @@ dataSources:
           handler: handleNewBalance
         - event: Withdraw(address,address,uint160)
           handler: handleWithdraw
-      file: ./bank-extension-mapping.ts
+      file: ./mapping.ts
