@@ -42,12 +42,10 @@ type Member @entity {
   createdAt: String
   delegateKey: Bytes
   units: BigInt!
-  tokenHoldings: [TokenHolder!] @derivedFrom(field: "member")
+  # tokenHoldings: [TokenHolder!] @derivedFrom(field: "member")
   proposals: [Proposal!] @derivedFrom(field: "member")
   didFullyRagequit: Boolean
   isDelegated: Boolean
-  "List of DAOs the member belongs to"
-  tributeDaos: [TributeDao!]!
 }
 
 type Proposal @entity {
@@ -63,7 +61,7 @@ type Proposal @entity {
   processedAt: String
   processedBy: Bytes
   member: Member
-  tributeDao: TributeDao
+  # tributeDao: TributeDao
 
   "Adapter ID of the proposal"
   adapterId: Bytes

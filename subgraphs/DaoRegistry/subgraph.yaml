@@ -21,7 +21,7 @@ dataSources:
         - Vote
       abis:
         - name: DaoRegistry
-          file: ./build/artifacts/build/contracts/core/DaoRegistry.sol/DaoRegistry.json
+          file: ../../build/artifacts/build/contracts/core/DaoRegistry.sol/DaoRegistry.json
         # - name: OnboardingContract
         #   file: ./build/artifacts/build/contracts/adapters/Onboarding.sol/OnboardingContract.json
         # - name: DistributeContract
@@ -37,11 +37,11 @@ dataSources:
         # - name: FinancingContract
         #   file: ./build/artifacts/build/contracts/adapters/Financing.sol/FinancingContract.json
         - name: OffchainVotingContract
-          file: ./build/artifacts/build/contracts/adapters/voting/OffchainVoting.sol/OffchainVotingContract.json
+          file: ../../build/artifacts/build/contracts/adapters/voting/OffchainVoting.sol/OffchainVotingContract.json
         - name: VotingContract
-          file: ./build/artifacts/build/contracts/adapters/voting/Voting.sol/VotingContract.json
+          file: ../../build/artifacts/build/contracts/adapters/voting/Voting.sol/VotingContract.json
         - name: IVoting
-          file: ./build/artifacts/build/contracts/adapters/interfaces/IVoting.sol/IVoting.json
+          file: ../../build/artifacts/build/contracts/adapters/interfaces/IVoting.sol/IVoting.json
         # - name: ERC20Extension
         #   file: ./build/artifacts/build/contracts/extensions/token/erc20/ERC20TokenExtension.sol/ERC20Extension.json
       eventHandlers:

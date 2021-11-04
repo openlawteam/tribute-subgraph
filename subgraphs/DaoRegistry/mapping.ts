@@ -166,7 +166,7 @@ export function handleSubmittedProposal(event: SubmittedProposal): void {
     proposal = new Proposal(daoProposalId);
 
     proposal.adapterId = inverseAdapter.value0;
-    proposal.flags = event.params.flags;
+    // proposal.flags = event.params.flags;
     proposal.submittedBy = submittedBy;
     proposal.proposalId = proposalId;
     proposal.sponsored = false;
@@ -197,7 +197,7 @@ export function handleSponsoredProposal(event: SponsoredProposal): void {
     event.params.proposalId.toHexString(),
   ]);
 
-  proposal.flags = event.params.flags;
+  // proposal.flags = event.params.flags;
   proposal.sponsoredAt = sponsoredAt;
   proposal.sponsored = true;
   proposal.sponsoredBy = event.transaction.from;
@@ -208,26 +208,25 @@ export function handleSponsoredProposal(event: SponsoredProposal): void {
 
 export function handleProcessedProposal(event: ProcessedProposal): void {
   let processedAt = event.block.timestamp.toString();
-  let blockNumber = event.block.number;
+  // let blockNumber = event.block.number;
 
   log.info("=============== ProcessedProposal event fired. proposalId: {}", [
     event.params.proposalId.toHexString(),
   ]);
 
-  let proposal = loadProposalAndSaveVoteResults(
-    event.address,
-    event.params.proposalId,
-    blockNumber
-  );
+  // let proposal = loadProposalAndSaveVoteResults(
+  //   event.address,
+  //   event.params.proposalId
+  // );
 
-  if (proposal) {
-    proposal.flags = event.params.flags;
-    proposal.processedAt = processedAt;
-    proposal.processed = true;
-    proposal.processedBy = event.transaction.from;
+  // if (proposal) {
+  //   // proposal.flags = event.params.flags;
+  //   proposal.processedAt = processedAt;
+  //   proposal.processed = true;
+  //   proposal.processedBy = event.transaction.from;
 
-    proposal.save();
-  }
+  //   proposal.save();
+  // }
 }
 
 export function handleUpdateDelegateKey(event: UpdateDelegateKey): void {
