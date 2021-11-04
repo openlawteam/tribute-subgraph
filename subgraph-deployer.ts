@@ -63,7 +63,6 @@ let executedDeployments: number = 0;
           "📦 ### 2/3 Creating the graph scheme for...",
           datasourceName
         );
-
         exec(`graph codegen`, datasourcePath);
 
         // Building the graph scheme
@@ -86,7 +85,7 @@ let executedDeployments: number = 0;
         );
 
         // Deploy subgraph <SUBGRAPH_SLUG>
-        console.log("🚗 ### Deploying subgraph...");
+        console.log("🏎  ### Deploying subgraph...");
 
         exec(
           `graph auth --studio ${process.env.GRAPH_DEPLOYMENT_KEY}`,
