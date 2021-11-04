@@ -5,9 +5,23 @@ import { config as dotenvConfig } from "dotenv";
 dotenvConfig({ path: resolve(__dirname, ".env") });
 
 const SUBGRAPH_SLUGS = {
-  // BankExtension: "tribute-dao-bank-extension-dev",
-  // CouponOnboarding: "tribute-dao-coupon-onboarding-dev",
+  /**
+   * CORE
+   * Mandatory core subgraphs
+   */
   DaoRegistry: "tribute-dao-registry-dev",
+  // BankExtension: "tribute-dao-bank-extension-dev",
+
+  /**
+   * ADAPTERS
+   * Add your adpater subgraphs datasource and subgraph slug
+   */
+  // CouponOnboarding: "tribute-dao-coupon-onboarding-dev",
+
+  /**
+   * EXTENSIONS
+   * Add your extension subgraphs datasource and subgraph slug
+   */
   // NFTExtension: "tribute-dao-nft-extension-dev",
 };
 
@@ -25,7 +39,7 @@ let executedDeployments: number = 0;
 
 // Compile the solidity contracts
 console.log("📦 ### 1/3 Compiling the smart contracts...");
-// @todo exec(`npm run compile`);
+exec(`npm run compile`);
 
 (function() {
   Object.entries(SUBGRAPH_SLUGS).forEach(
@@ -74,7 +88,6 @@ console.log("📦 ### 1/3 Compiling the smart contracts...");
         // Deploy subgraph <SUBGRAPH_SLUG>
         console.log("🚗 ### Deploying subgraph...");
 
-        // if (subgraph.network === "mainnet") {
         exec(
           `graph auth --studio ${process.env.GRAPH_DEPLOYMENT_KEY}`,
           datasourcePath

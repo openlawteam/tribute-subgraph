@@ -49,7 +49,8 @@
     "codegen": "graph codegen",
     "build": "graph build",
     "compile": "rimraf build && mkdir -p build/contracts && cp -r node_modules/tribute-contracts/contracts/** build/contracts && hardhat compile",
-    "release": "np"
+    "release": "np",
+    "deploy-subgraph": "ts-node subgraph-deployer.ts"
   },
   "repository": {
     "type": "git",
