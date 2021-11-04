@@ -20,7 +20,9 @@ yarn global add @graphprotocol/graph-cli
 
 ## Subgraph Development Setup
 
-Each adapter, and extension contract should have it's own subgraph. To create a new subgraph for a new adapter or extension contract, create a new folder in the `subgraphs` directory with the contract name. Take a look at The Graph's [documentation](https://thegraph.com/docs/developer/create-subgraph-hosted) on how to create a subgraph, also check out the current examples in the subgraphs directory.
+Each adapter, and extension contract should have it's own subgraph. To create a new subgraph for a new adapter or extension contract, create a new folder in the `subgraphs` directory with the contract name.
+
+Take a look at The Graph's [documentation](https://thegraph.com/docs/developer/create-subgraph-hosted) on how to create a subgraph, also check out the current examples in the subgraphs directory.
 
 ## Subgraph Deployment
 

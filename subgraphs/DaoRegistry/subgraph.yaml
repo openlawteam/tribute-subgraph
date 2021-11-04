@@ -1,5 +1,5 @@
 specVersion: 0.0.2
-description: Tribute DAO Framework Subgraph
+description: Tribute DAO Framework Subgraph (DaoRegistry)
 repository: https://github.com/openlawteam/tribute-subgraph
 schema:
   file: ./schema.graphql

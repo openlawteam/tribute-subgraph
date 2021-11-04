@@ -19,7 +19,6 @@ type Member @entity {
   createdAt: String
   delegateKey: Bytes
   units: BigInt!
-  # tokenHoldings: [TokenHolder!] @derivedFrom(field: "member")
   proposals: [Proposal!] @derivedFrom(field: "member")
   didFullyRagequit: Boolean
   isDelegated: Boolean
@@ -45,13 +44,6 @@ type Proposal @entity {
   adapterAddress: Bytes
   "Voting adapter address"
   votingAdapter: Bytes
-
-  # ONBOARDING; proposal details
-  unitsToMint: Bytes
-  amount: BigInt
-  unitsRequested: BigInt
-  token: Bytes
-  applicant: Bytes
 
   # OFFCHAIN VOTES: additional info
   snapshot: BigInt

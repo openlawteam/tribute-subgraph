@@ -9,8 +9,6 @@ type Member @entity {
   proposals: [Proposal!] @derivedFrom(field: "member")
   didFullyRagequit: Boolean
   isDelegated: Boolean
-  "List of DAOs the member belongs to"
-  tributeDaos: [TributeDao!]!
 }
 
 type Bank @entity {
@@ -18,7 +16,6 @@ type Bank @entity {
   id: ID! # Set to `${tribute.id}-bank-${bank.id}`
   "The bank of the DAO"
   bankAddress: Bytes!
-  tributeDao: TributeDao!
 }
 
 type Token @entity {
