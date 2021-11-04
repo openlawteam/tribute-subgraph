@@ -8,13 +8,11 @@ You need to install Graph CLI with either npm or yarn.
 
 > Note: You need version 0.21.0 or above
 
-NPM install:
-
 ```
 npm install -g @graphprotocol/graph-cli
 ```
 
-Yarn install:
+or
 
 ```
 yarn global add @graphprotocol/graph-cli
@@ -22,7 +20,7 @@ yarn global add @graphprotocol/graph-cli
 
 ## Subgraph Deployment Setup
 
-In the `subgraph-deployer.ts` script, you will need to add the subgraph slug for all the datasources of each adapter/extension subgraph you want to deploy:
+In the `subgraph-deployer.ts` script, you will need to add the subgraph slug for all the datasources of each adapter and extension subgraph you want to deploy:
 
 ```
 const SUBGRAPH_SLUGS = {
@@ -49,10 +47,11 @@ const SUBGRAPH_SLUGS = {
 };
 ```
 
-In `.env` (create `.env` file if necessary), add the deployment key from your Subgraph Studio account:
+In `.env` (create `.env` file if there isn't one already created), add your seed phrase (for the hardhat contract compilation) and the deployment key from your Subgraph Studio account:
 
 ```
 GRAPH_DEPLOYMENT_KEY=...
+TRUFFLE_MNEMONIC=...
 ```
 
 Then, simply run the following command to deploy the subgraphs:
