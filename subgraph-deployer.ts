@@ -39,7 +39,7 @@ let executedDeployments: number = 0;
 
 (function() {
   // Compile the solidity contracts
-  console.log("📦 ### 1/3 Compiling the smart contracts...");
+  console.log("⛓  ### Compiling the smart contracts...");
   exec(`npm run compile`);
 
   Object.entries(SUBGRAPH_SLUGS).forEach(
@@ -53,34 +53,34 @@ let executedDeployments: number = 0;
         )}`;
 
         console.log(
-          `📦 ### DEPLOYMENT ${index + 1}/${
+          `✨ ### DEPLOYMENT ${index + 1}/${
             Object.keys(SUBGRAPH_SLUGS).length
           }...`
         );
 
         // Create the graph code generation files
         console.log(
-          "📦 ### 2/3 Creating the graph scheme for...",
+          "📦 ### 1/3 Creating the graph scheme for...",
           datasourceName
         );
         exec(`graph codegen`, datasourcePath);
 
         // Building the graph scheme
         console.log(
-          "📦 ### 3/3 Building the graph scheme for...",
+          "📦 ### 2/3 Building the graph scheme for...",
           datasourceName
         );
         exec(`graph build`, datasourcePath);
 
         console.log(
-          "📦 ### Build complete, preparing deployment for ...",
+          "📦 ### 3/3 Build complete, preparing deployment for ...",
           datasourceName
         );
 
         console.log(
           `
         ==== READY TO DEPLOY SUBGRAPH... ${datasourceName} ====
-        ✨ IMPORTANT: When prompted, enter a version label for the subgraph!
+        ⚠️  IMPORTANT: When prompted, enter a version label for the subgraph!
         `
         );
 
