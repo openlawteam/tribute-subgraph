@@ -23,9 +23,9 @@ dataSources:
         - Member
       abis:
         - name: BankExtension
-          file: ./build/artifacts/build/contracts/extensions/bank/Bank.sol/BankExtension.json
+          file: ../../build/artifacts/build/contracts/extensions/bank/Bank.sol/BankExtension.json
         - name: ERC20Extension
-          file: ./build/artifacts/build/contracts/extensions/token/erc20/ERC20TokenExtension.sol/ERC20Extension.json
+          file: ../../build/artifacts/build/contracts/extensions/token/erc20/ERC20TokenExtension.sol/ERC20Extension.json
       eventHandlers:
         - event: NewBalance(address,address,uint160)
           handler: handleNewBalance

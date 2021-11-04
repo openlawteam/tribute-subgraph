@@ -20,7 +20,7 @@ dataSources:
         - NFTCollection
       abis:
         - name: NFTExtension
-          file: ./build/artifacts/build/contracts/extensions/nft/NFT.sol/NFTExtension.json
+          file: ../../build/artifacts/build/contracts/extensions/nft/NFT.sol/NFTExtension.json
       eventHandlers:
         - event: CollectedNFT(address,uint256)
           handler: handleCollectedNFT

@@ -22,28 +22,12 @@ dataSources:
       abis:
         - name: DaoRegistry
           file: ../../build/artifacts/build/contracts/core/DaoRegistry.sol/DaoRegistry.json
-        # - name: OnboardingContract
-        #   file: ./build/artifacts/build/contracts/adapters/Onboarding.sol/OnboardingContract.json
-        # - name: DistributeContract
-        #   file: ./build/artifacts/build/contracts/adapters/Distribute.sol/DistributeContract.json
-        # - name: TributeContract
-        #   file: ./build/artifacts/build/contracts/adapters/Tribute.sol/TributeContract.json
-        # - name: TributeNFTContract
-        #   file: ./build/artifacts/build/contracts/adapters/TributeNFT.sol/TributeNFTContract.json
-        # - name: ManagingContract
-        #   file: ./build/artifacts/build/contracts/adapters/Managing.sol/ManagingContract.json
-        # - name: GuildKickContract
-        #   file: ./build/artifacts/build/contracts/adapters/GuildKick.sol/GuildKickContract.json
-        # - name: FinancingContract
-        #   file: ./build/artifacts/build/contracts/adapters/Financing.sol/FinancingContract.json
         - name: OffchainVotingContract
           file: ../../build/artifacts/build/contracts/adapters/voting/OffchainVoting.sol/OffchainVotingContract.json
         - name: VotingContract
           file: ../../build/artifacts/build/contracts/adapters/voting/Voting.sol/VotingContract.json
         - name: IVoting
           file: ../../build/artifacts/build/contracts/adapters/interfaces/IVoting.sol/IVoting.json
-        # - name: ERC20Extension
-        #   file: ./build/artifacts/build/contracts/extensions/token/erc20/ERC20TokenExtension.sol/ERC20Extension.json
       eventHandlers:
         - event: SubmittedProposal(bytes32,uint256)
           handler: handleSubmittedProposal

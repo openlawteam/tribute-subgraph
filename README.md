@@ -18,7 +18,11 @@ or
 yarn global add @graphprotocol/graph-cli
 ```
 
-## Subgraph Deployment Setup
+## Subgraph Development Setup
+
+Each adapter, and extension contract should have it's own subgraph. To create a new subgraph for a new adapter or extension contract, create a new folder in the `subgraphs` directory with the contract name. Take a look at The Graph's [documentation](https://thegraph.com/docs/developer/create-subgraph-hosted) on how to create a subgraph, also check out the current examples in the subgraphs directory.
+
+## Subgraph Deployment
 
 In the `subgraph-deployer.ts` script, you will need to add the subgraph slug for all the datasources of each adapter and extension subgraph you want to deploy:
 
@@ -59,6 +63,10 @@ Then, simply run the following command to deploy the subgraphs:
 ```
 npm run deploy-subgraph
 ```
+
+### Local Development Graph Setup
+
+Check out the setup guide [here](https://github.com/openlawteam/tribute-subgraph/blob/main/docker/README.md)
 
 ## Subgraph Tests
 

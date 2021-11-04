@@ -12,5 +12,4 @@ type NFTCollection @entity {
   "Unique identifier and primary key of the `NFTCollection` entity"
   id: ID! # Set to `${tribute.id}-nftcollection-${extensionAddress}`
   nfts: [NFT!] @derivedFrom(field: "nftCollection")
-  tributeDao: TributeDao!
 }

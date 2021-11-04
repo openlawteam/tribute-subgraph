@@ -20,8 +20,8 @@ dataSources:
         - Coupon
       abis:
         - name: CouponOnboarding
-          file: ./build/artifacts/build/contracts/core/DaoFactory.sol/DaoFactory.json
+          file: ../../build/artifacts/build/contracts/core/DaoFactory.sol/DaoFactory.json
       eventHandlers:
-        - event: DAOCreated(address,string)
-          handler: handleDaoCreated
+        - event: CouponRedeemed(address,uint256,address,uint256)
+          handler: handleCouponRedeemed
       file: ./mapping.ts
