@@ -37,11 +37,11 @@ export const exec = (cmd: string, cwdDir?: string) => {
 
 let executedDeployments: number = 0;
 
-// Compile the solidity contracts
-console.log("📦 ### 1/3 Compiling the smart contracts...");
-exec(`npm run compile`);
-
 (function() {
+  // Compile the solidity contracts
+  console.log("📦 ### 1/3 Compiling the smart contracts...");
+  exec(`npm run compile`);
+
   Object.entries(SUBGRAPH_SLUGS).forEach(
     async ([datasourceName, subgraphSlug], index) => {
       try {
@@ -107,6 +107,6 @@ exec(`npm run compile`);
   console.log(
     `${
       executedDeployments === 0 ? "😵" : "🎉"
-    }  ### ${executedDeployments} Deployment(s) Successful!`
+    } ### ${executedDeployments} Deployment(s) Successful!`
   );
 })();
