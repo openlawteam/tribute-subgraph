@@ -9,7 +9,7 @@ const NETWORK = process.env.NETWORK;
 
 enum NETWORKS {
   RINKEBY = "rinkeby",
-  MAINNET = "mainent",
+  MAINNET = "mainnet",
 }
 
 const SUBGRAPH_SLUGS = {
