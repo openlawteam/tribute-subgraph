@@ -53,10 +53,25 @@ const SUBGRAPH_SLUGS = {
 };
 ```
 
-In `.env` (create `.env` file if there isn't one already created), add your seed phrase (for the hardhat contract compilation) and the deployment key from your Subgraph Studio account:
+In `.env` (create `.env` file if there isn't one already created), add your seed phrase (for the hardhat contract compilation), network, github username, graph access token from your Hosted Service [dashboard](https://thegraph.com/hosted-service/dashboard) and the deployment key from your Subgraph Studio account:
 
 ```
+# The ethereum network to deploy the subgraph.
+NETWORK=rinkeby
+
+# Your github username to deploy the subgraph to the hosted service.
+GITHUB_USERNAME=...
+
+# The Graph API Access Token that will be used to deploy the Subgraph
+# to the hosted service (rinkeby/testnet).
+GRAPH_ACCESS_TOKEN=...
+
+# The Graph API Deployment Key that will be used to deploy the Subgraph
+# to the decentralized service (mainnet).
 GRAPH_DEPLOYMENT_KEY=...
+
+# The wallet mnemonic/seed phrase is a 12 word string which is used to create
+# the HD Wallet, and sign transactions on your behalf.
 WALLET_SEED_PHRASE=...
 ```
 

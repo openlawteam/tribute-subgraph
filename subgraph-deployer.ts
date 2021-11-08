@@ -4,6 +4,14 @@ import { config as dotenvConfig } from "dotenv";
 
 dotenvConfig({ path: resolve(__dirname, ".env") });
 
+const GITHUB_USERNAME = process.env.GITHUB_USERNAME;
+const NETWORK = process.env.NETWORK;
+
+enum NETWORKS {
+  RINKEBY = "rinkeby",
+  MAINNET = "mainent",
+}
+
 const SUBGRAPH_SLUGS = {
   /**
    * CORE
@@ -38,6 +46,14 @@ export const exec = (cmd: string, cwdDir?: string) => {
 let executedDeployments: number = 0;
 
 (function() {
+  if (!NETWORK) {
+    throw new Error("Please set a NETWORK in a .env file");
+  }
+
+  if (!GITHUB_USERNAME && NETWORK !== NETWORKS.MAINNET) {
+    throw new Error("Please set your GITHUB_USERNAME in a .env file");
+  }
+
   // Compile the solidity contracts
   console.log("⛓  ### Compiling the smart contracts...");
   exec(`npm run compile`);
@@ -77,21 +93,30 @@ let executedDeployments: number = 0;
           datasourceName
         );
 
-        console.log(
+        if (NETWORK === NETWORKS.MAINNET) {
+          console.log(
+            `
+          ==== READY TO DEPLOY SUBGRAPH... ${datasourceName} ====
+          ⚠️  IMPORTANT: When prompted, enter a version label for the subgraph!
           `
-        ==== READY TO DEPLOY SUBGRAPH... ${datasourceName} ====
-        ⚠️  IMPORTANT: When prompted, enter a version label for the subgraph!
-        `
-        );
+          );
+        }
 
         // Deploy subgraph <SUBGRAPH_SLUG>
         console.log("🏎  ### Deploying subgraph...");
 
-        exec(
-          `graph auth --studio ${process.env.GRAPH_DEPLOYMENT_KEY}`,
-          datasourcePath
-        );
-        exec(`graph deploy --studio ${subgraphSlug}`, datasourcePath);
+        if (NETWORK === NETWORKS.MAINNET) {
+          exec(
+            `graph auth --studio ${process.env.GRAPH_DEPLOYMENT_KEY}`,
+            datasourcePath
+          );
+          exec(`graph deploy --studio ${subgraphSlug}`, datasourcePath);
+        } else {
+          exec(
+            `graph deploy --access-token ${process.env.GRAPH_ACCESS_TOKEN} --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ ${GITHUB_USERNAME}/${subgraphSlug}`,
+            datasourcePath
+          );
+        }
 
         console.log("🦾 ### Done.");
 
