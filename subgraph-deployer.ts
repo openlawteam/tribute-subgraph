@@ -18,20 +18,20 @@ const SUBGRAPH_SLUGS = {
    * CORE
    * Mandatory core subgraphs
    */
-  DaoRegistry: "tribute-dao-registry-dev",
+  DaoRegistry: "dao-registry-dev",
   // BankExtension: "tribute-dao-bank-extension-dev",
 
   /**
    * ADAPTERS
    * Add your adpater subgraphs datasource and subgraph slug
    */
-  // CouponOnboarding: "tribute-dao-coupon-onboarding-dev",
+  // CouponOnboarding: "coupon-onboarding-dev",
 
   /**
    * EXTENSIONS
    * Add your extension subgraphs datasource and subgraph slug
    */
-  // NFTExtension: "tribute-dao-nft-extension-dev",
+  // NFTExtension: "nft-extension-dev",
 };
 
 // Execute Child Processes
