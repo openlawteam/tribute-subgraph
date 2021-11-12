@@ -4,30 +4,24 @@ import {
   BankExtension,
   NewBalance,
   Withdraw,
-} from "../../generated/templates/BankExtension/BankExtension";
-import { ERC20Extension } from "../../generated/templates/BankExtension/ERC20Extension";
-import {
-  Member,
-  Token,
-  TokenHolder,
-  Extension,
-  TributeDao,
-} from "../../generated/schema";
+} from "./generated/BankExtension/BankExtension";
+import { ERC20Extension } from "./generated/BankExtension/ERC20Extension";
+import { Bank, Member, Token, TokenHolder } from "./generated/schema";
 
 // Reserved Internal Addresses
-export let ESCROW: Address = Address.fromString(
+let ESCROW: Address = Address.fromString(
   "0x0000000000000000000000000000000000004bec"
 );
-export let GUILD: Address = Address.fromString(
+let GUILD: Address = Address.fromString(
   "0x000000000000000000000000000000000000dead"
 );
-export let MEMBER_COUNT: Address = Address.fromString(
+let MEMBER_COUNT: Address = Address.fromString(
   "0x00000000000000000000000000000000decafbad"
 );
-export let TOTAL: Address = Address.fromString(
+let TOTAL: Address = Address.fromString(
   "0x000000000000000000000000000000000000babe"
 );
-export let UNITS: Address = Address.fromString(
+let UNITS: Address = Address.fromString(
   "0x00000000000000000000000000000000000Ff1CE"
 );
 
@@ -35,10 +29,10 @@ export let UNITS: Address = Address.fromString(
  * Extensions
  */
 
-export let BANK_EXTENSION_ID: string =
+let BANK_EXTENSION_ID: string =
   "0xea0ca03c7adbe41dc655fec28a9209dc8e6e042f3d991a67765ba285b9cf73a0";
 
-export let ERC20_EXTENSION_ID: string =
+let ERC20_EXTENSION_ID: string =
   "0x77d63af07d7aad7f422b79cf9d7285aec3f3e6f32e6e4391f1ce842d752663fd";
 
 function internalTransfer(
@@ -51,8 +45,6 @@ function internalTransfer(
   let bankRegistry = BankExtension.bind(extensionAddress);
   // get dao address
   let daoAddress = bankRegistry.dao();
-  // initialize an array
-  let tributeDaos: string[] = [];
 
   if (
     TOTAL.toHex() != memberAddress.toHex() &&
@@ -75,15 +67,7 @@ function internalTransfer(
       member.memberAddress = memberAddress;
       member.delegateKey = memberAddress;
       member.isDelegated = false;
-    } else {
-      // get members daos
-      tributeDaos = member.tributeDaos;
     }
-
-    // create 1-1 relationship between member and dao
-    tributeDaos.push(daoAddress.toHexString());
-    // add members daos
-    member.tributeDaos = tributeDaos;
 
     /**
      * get `balanceOf` for members UNITS
@@ -116,17 +100,17 @@ function internalTransfer(
     balanceOfGuildUnits
   );
 
-  let dao = TributeDao.load(daoAddress.toHexString());
+  let bank = Bank.load(daoAddress.toHexString());
 
-  if (dao != null) {
-    dao.totalUnits = balanceOfTotalUnits.toString();
-    dao.totalUnitsIssued = balanceOfTotalUnitsIssued.toString();
+  if (bank != null) {
+    bank.totalUnits = balanceOfTotalUnits.toString();
+    bank.totalUnitsIssued = balanceOfTotalUnitsIssued.toString();
 
-    dao.save();
+    bank.save();
   }
 }
 
-export function internalERC20Balance(
+function internalERC20Balance(
   daoAddress: Address,
   memberAddress: Address
 ): void {

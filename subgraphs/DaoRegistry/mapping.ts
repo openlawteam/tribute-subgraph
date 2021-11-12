@@ -19,7 +19,6 @@ import { IVoting } from "./generated/DaoRegistry/IVoting";
 
 import { Adapter, Extension, Proposal, Member, Vote } from "./generated/schema";
 
-// import { getProposalDetails } from "../z_TO_REMOVE_mappings/helpers/proposal-details";
 // import { loadOrCreateExtensionEntity } from "../z_TO_REMOVE_mappings/helpers/extension-entities";
 // import { loadProposalAndSaveVoteResults } from "../z_TO_REMOVE_mappings/helpers/vote-results";
 

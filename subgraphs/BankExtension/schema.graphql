@@ -4,11 +4,10 @@ type Member @entity {
   memberAddress: Bytes
   createdAt: String
   delegateKey: Bytes
-  units: BigInt!
-  tokenHoldings: [TokenHolder!] @derivedFrom(field: "member")
-  proposals: [Proposal!] @derivedFrom(field: "member")
   didFullyRagequit: Boolean
   isDelegated: Boolean
+  tokenHoldings: [TokenHolder!] @derivedFrom(field: "member")
+  units: BigInt!
 }
 
 type Bank @entity {
@@ -16,6 +15,8 @@ type Bank @entity {
   id: ID! # Set to `${tribute.id}-bank-${bank.id}`
   "The bank of the DAO"
   bankAddress: Bytes!
+  totalUnits: String
+  totalUnitsIssued: String
 }
 
 type Token @entity {
