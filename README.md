@@ -83,7 +83,7 @@ npm run deploy-subgraph
 
 ### Local Development Graph Setup
 
-Check out the setup guide [here](https://github.com/openlawteam/tribute-subgraph/blob/main/docker/README.md)
+Check out the setup and development guide [here](https://github.com/openlawteam/tribute-subgraph/blob/main/docker/README.md)
 
 ## Subgraph Tests
 

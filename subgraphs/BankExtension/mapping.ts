@@ -15,17 +15,20 @@ import {
 } from "../../generated/schema";
 
 // Reserved Internal Addresses
-export let UNITS: Address = Address.fromString(
-  "0x00000000000000000000000000000000000Ff1CE"
+export let ESCROW: Address = Address.fromString(
+  "0x0000000000000000000000000000000000004bec"
 );
 export let GUILD: Address = Address.fromString(
   "0x000000000000000000000000000000000000dead"
 );
+export let MEMBER_COUNT: Address = Address.fromString(
+  "0x00000000000000000000000000000000decafbad"
+);
 export let TOTAL: Address = Address.fromString(
   "0x000000000000000000000000000000000000babe"
 );
-export let MEMBER_COUNT: Address = Address.fromString(
-  "0x00000000000000000000000000000000decafbad"
+export let UNITS: Address = Address.fromString(
+  "0x00000000000000000000000000000000000Ff1CE"
 );
 
 /**
@@ -55,9 +58,11 @@ function internalTransfer(
     TOTAL.toHex() != memberAddress.toHex() &&
     GUILD.toHex() != memberAddress.toHex() &&
     MEMBER_COUNT.toHex() != memberAddress.toHex() &&
+    ESCROW.toHex() != memberAddress.toHex() &&
     TOTAL.toHex() != tokenAddress.toHex() &&
     GUILD.toHex() != tokenAddress.toHex() &&
-    MEMBER_COUNT.toHex() != tokenAddress.toHex()
+    MEMBER_COUNT.toHex() != tokenAddress.toHex() &&
+    ESCROW.toHex() != tokenAddress.toHex()
   ) {
     // check if the DAO has an ERC20 extension and assign members balance
     internalERC20Balance(daoAddress, memberAddress);
@@ -102,12 +107,20 @@ function internalTransfer(
     member.save();
   }
 
-  // get totalUnits in the dao
+  // get total units minted for the DAO
   let balanceOfTotalUnits = bankRegistry.balanceOf(TOTAL, UNITS);
+  // get balance of units owned by the guild bank
+  let balanceOfGuildUnits = bankRegistry.balanceOf(GUILD, UNITS);
+  // get total units issued and outstanding in the DAO (not owned by guild bank)
+  let balanceOfTotalUnitsIssued = balanceOfTotalUnits.minus(
+    balanceOfGuildUnits
+  );
+
   let dao = TributeDao.load(daoAddress.toHexString());
 
   if (dao != null) {
     dao.totalUnits = balanceOfTotalUnits.toString();
+    dao.totalUnitsIssued = balanceOfTotalUnitsIssued.toString();
 
     dao.save();
   }

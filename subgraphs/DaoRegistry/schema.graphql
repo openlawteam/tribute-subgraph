@@ -12,6 +12,22 @@ enum VotingState {
   GRACE_PERIOD
 }
 
+type TributeDao @entity {
+  "Unique identifier and primary key of the `TributeDao` entity"
+  id: ID! # Set to `${tribute.id}
+  "The address of the DAO"
+  daoAddress: Bytes
+  "The name of the DAO"
+  daoName: String
+  "The DAO creator address"
+  creator: Bytes
+  createdAt: String
+  "Total units minted for the DAO"
+  totalUnits: String
+  "Total units issued and outstanding"
+  totalUnitsIssued: String
+}
+
 type Member @entity {
   "Unique identifier and primary key of the `Member` entity"
   id: ID! # Set to `${member.id}`
@@ -38,10 +54,10 @@ type Proposal @entity {
   processedBy: Bytes
   member: Member
 
-  "Adapter ID of the proposal"
-  adapterId: Bytes
-  "Adapter contract address of the proposal"
-  adapterAddress: Bytes
+  "Adapter or extension ID of the proposal"
+  adapterOrExtensionId: Bytes
+  "Adapter or extension contract address of the proposal"
+  adapterOrExtensionAddr: Bytes
   "Voting adapter address"
   votingAdapter: Bytes
 
@@ -57,8 +73,8 @@ type Proposal @entity {
   gracePeriodStartingTime: BigInt
   isChallenged: Boolean
   stepRequested: BigInt
-  # fallbackVotes: BigInt
   forceFailed: Boolean
+  # fallbackVotes: BigInt
   fallbackVotesCount: BigInt
 
   # ONCHAIN VOTES: additional info
@@ -76,4 +92,22 @@ type Vote @entity {
   adapterName: VotingAdapterName!
   adapterAddress: Bytes!
   proposal: Proposal
+}
+
+type Adapter @entity {
+  "Unique identifier and primary key of the `Adapter` entity"
+  id: ID! # Set to `${tribute.id}-adapter-${adapter.id}`
+  adapterId: Bytes!
+  adapterAddress: Bytes!
+  "Adapter acl (access control layer)"
+  acl: BigInt!
+}
+
+type Extension @entity {
+  "Unique identifier and primary key of the `Extension` entity"
+  id: ID! # Set to `${tribute.id}-extension-${extension.id}`
+  "Extension contract address"
+  extensionAddress: Bytes!
+  "Extension ID"
+  extensionId: Bytes!
 }

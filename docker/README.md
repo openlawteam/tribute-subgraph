@@ -33,6 +33,16 @@ Once this is up and running, you can create and deploy your subgraph to the runn
 Then from the root directory:
 
 - `npm ci` to install dependencies
-- `npm run codegen` to run the code generation
-- `yarn create-local` to allocate the subgraph name in the Graph Node
-- `yarn deploy-local` to deploy the subgraph to your local Graph Node
+
+Then `cd` into the subgraph directory you want to build and deploy, for example `cd subgraphs/DaoRegistry`, then:
+
+- `graph codegen` to run the code generation
+- `graph build` to build the source files
+
+To deploy the subgraphs to your local ganache Graph Node, `cd` to the root directory and set the `NETWORK` variable in `.env` to `ganache`:
+
+```
+NETWORK=ganache
+```
+
+Then, run the subgraph deployer `npm run deploy-subgraph` to allocate the subgraph name in the Graph Node and deploy the subgraphs to your local Graph Node

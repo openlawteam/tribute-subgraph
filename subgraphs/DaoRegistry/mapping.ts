@@ -12,18 +12,12 @@ import {
   ConfigurationUpdated,
   AddressConfigurationUpdated,
   DaoRegistry,
-} from "../../generated/templates/DaoRegistry/DaoRegistry";
-import { OffchainVotingContract } from "../../generated/templates/DaoRegistry/OffchainVotingContract";
-import { VotingContract } from "../../generated/templates/DaoRegistry/VotingContract";
-import { IVoting } from "../../generated/templates/DaoRegistry/IVoting";
+} from "./generated/DaoRegistry/DaoRegistry";
+import { OffchainVotingContract } from "./generated/DaoRegistry/OffchainVotingContract";
+import { VotingContract } from "./generated/DaoRegistry/VotingContract";
+import { IVoting } from "./generated/DaoRegistry/IVoting";
 
-import {
-  Adapter,
-  Extension,
-  Proposal,
-  Member,
-  Vote,
-} from "../../generated/schema";
+import { Adapter, Extension, Proposal, Member, Vote } from "./generated/schema";
 
 // import { getProposalDetails } from "../z_TO_REMOVE_mappings/helpers/proposal-details";
 // import { loadOrCreateExtensionEntity } from "../z_TO_REMOVE_mappings/helpers/extension-entities";
@@ -76,7 +70,6 @@ export function loadProposalAndSaveVoteResults(
           proposal.nbYes = voteResults.value0;
           proposal.nbNo = voteResults.value1;
           proposal.startingTime = voteResults.value2;
-          proposal.blockNumber = voteResults.value3;
 
           proposal.votingState = voteState.toString();
           proposal.votingResult = voteId;
@@ -112,9 +105,9 @@ export function loadProposalAndSaveVoteResults(
           proposal.gracePeriodStartingTime = voteResults.value6;
           proposal.isChallenged = voteResults.value7;
           proposal.stepRequested = voteResults.value8;
-          // @todo its a mapping, not generated in schema
-          // proposal.fallbackVotes = voteResults.value10;
           proposal.forceFailed = voteResults.value9;
+          // @todo its a mapping, not generated in schema
+          // proposal.fallbackVotes = voteResults.value??;
           proposal.fallbackVotesCount = voteResults.value10;
 
           proposal.votingState = voteState.toString();
@@ -165,14 +158,13 @@ export function handleSubmittedProposal(event: SubmittedProposal): void {
   if (proposal == null) {
     proposal = new Proposal(daoProposalId);
 
-    proposal.adapterId = inverseAdapter.value0;
+    proposal.adapterOrExtensionId = inverseAdapter.value0;
     // proposal.flags = event.params.flags;
     proposal.submittedBy = submittedBy;
     proposal.proposalId = proposalId;
     proposal.sponsored = false;
     proposal.processed = false;
     proposal.member = submittedBy.toHex();
-    proposal.tributeDao = daoAddress.toHex();
 
     proposal.save();
   }
@@ -269,9 +261,6 @@ export function handleAdapterAdded(event: AdapterAdded): void {
     adapter.acl = event.params.flags;
     adapter.adapterAddress = event.params.adapterAddress;
 
-    // create 1-1 relationship with adapter and its dao
-    adapter.tributeDao = daoAddress;
-
     adapter.save();
   }
 }
@@ -318,8 +307,6 @@ export function handleExtensionAdded(event: ExtensionAdded): void {
   extension.extensionAddress = event.params.extensionAddress;
   extension.extensionId = event.params.extensionId;
 
-  // create 1-1 relationship with extensions and its dao
-  extension.tributeDao = daoAddress;
   extension.save();
 
   // loadOrCreateExtensionEntity(

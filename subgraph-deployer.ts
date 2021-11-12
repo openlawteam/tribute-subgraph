@@ -8,6 +8,7 @@ const GITHUB_USERNAME = process.env.GITHUB_USERNAME;
 const NETWORK = process.env.NETWORK;
 
 enum NETWORKS {
+  GANACHE = "ganache",
   RINKEBY = "rinkeby",
   MAINNET = "mainnet",
 }
@@ -61,6 +62,12 @@ let executedDeployments: number = 0;
   Object.entries(SUBGRAPH_SLUGS).forEach(
     async ([datasourceName, subgraphSlug], index) => {
       try {
+        // Display deployment index
+        console.log(
+          `✨ ### DEPLOYMENT ${index + 1}/${
+            Object.keys(SUBGRAPH_SLUGS).length
+          }...`
+        );
         // Define the subgraph dataSource path
         const datasourcePath = `${resolve(
           __dirname,
@@ -68,54 +75,58 @@ let executedDeployments: number = 0;
           datasourceName
         )}`;
 
-        console.log(
-          `✨ ### DEPLOYMENT ${index + 1}/${
-            Object.keys(SUBGRAPH_SLUGS).length
-          }...`
-        );
-
         // Create the graph code generation files
-        console.log(
-          "📦 ### 1/3 Creating the graph scheme for...",
-          datasourceName
-        );
-        exec(`graph codegen`, datasourcePath);
+        // console.log(
+        //   "📦 ### 1/3 Creating the graph scheme for...",
+        //   datasourceName
+        // );
+        // exec(`graph codegen`, datasourcePath);
+        taskGraphCodegen(datasourceName, datasourcePath);
 
         // Building the graph scheme
-        console.log(
-          "📦 ### 2/3 Building the graph scheme for...",
-          datasourceName
-        );
-        exec(`graph build`, datasourcePath);
+        // console.log(
+        //   "📦 ### 2/3 Building the graph scheme for...",
+        //   datasourceName
+        // );
+        // exec(`graph build`, datasourcePath);
+        taskGraphBuild(datasourceName, datasourcePath);
 
-        console.log(
-          "📦 ### 3/3 Build complete, preparing deployment for ...",
-          datasourceName
-        );
+        // console.log(
+        //   "📦 ### 3/3 Build complete, preparing deployment for ...",
+        //   datasourceName
+        // );
 
-        if (NETWORK === NETWORKS.MAINNET) {
-          console.log(
-            `
-          ==== READY TO DEPLOY SUBGRAPH... ${datasourceName} ====
-          ⚠️  IMPORTANT: When prompted, enter a version label for the subgraph!
-          `
-          );
-        }
+        // if (NETWORK === NETWORKS.MAINNET) {
+        //   console.log(
+        //     `
+        //   ==== READY TO DEPLOY SUBGRAPH... ${datasourceName} ====
+        //   ⚠️  IMPORTANT: When prompted, enter a version label for the subgraph!
+        //   `
+        //   );
+        // }
 
         // Deploy subgraph <SUBGRAPH_SLUG>
-        console.log("🏎  ### Deploying subgraph...");
+        // console.log("🏎  ### Deploying subgraph...");
+
+        // if (NETWORK === NETWORKS.MAINNET) {
+        //   exec(
+        //     `graph auth --studio ${process.env.GRAPH_DEPLOYMENT_KEY}`,
+        //     datasourcePath
+        //   );
+        //   exec(`graph deploy --studio ${subgraphSlug}`, datasourcePath);
+        // } else {
+        //   exec(
+        //     `graph deploy --access-token ${process.env.GRAPH_ACCESS_TOKEN} --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ ${GITHUB_USERNAME}/${subgraphSlug}`,
+        //     datasourcePath
+        //   );
+        // }
 
         if (NETWORK === NETWORKS.MAINNET) {
-          exec(
-            `graph auth --studio ${process.env.GRAPH_DEPLOYMENT_KEY}`,
-            datasourcePath
-          );
-          exec(`graph deploy --studio ${subgraphSlug}`, datasourcePath);
-        } else {
-          exec(
-            `graph deploy --access-token ${process.env.GRAPH_ACCESS_TOKEN} --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ ${GITHUB_USERNAME}/${subgraphSlug}`,
-            datasourcePath
-          );
+          taskDeployToNetwork(datasourceName, datasourcePath, subgraphSlug);
+        } else if (NETWORK === NETWORKS.RINKEBY) {
+          taskDeployToHosted(datasourcePath, subgraphSlug);
+        } else if (NETWORK === NETWORKS.GANACHE) {
+          taskDeployToLocal(datasourcePath, subgraphSlug);
         }
 
         console.log("🦾 ### Done.");
@@ -134,3 +145,96 @@ let executedDeployments: number = 0;
     } ### ${executedDeployments} Deployment(s) Successful!`
   );
 })();
+
+/**
+ * taskGraphCodegen()
+ *
+ * Runs the code generation
+ * @param datasourceName
+ * @param datasourcePath
+ */
+function taskGraphCodegen(datasourceName: string, datasourcePath: string) {
+  // Create the graph code generation files
+  console.log("📦 ### 1/3 Creating the graph scheme for...", datasourceName);
+  exec(`graph codegen`, datasourcePath);
+}
+
+/**
+ * taskGraphBuild()
+ *
+ * Builds the graph scheme
+ * @param datasourceName
+ * @param datasourcePath
+ */
+function taskGraphBuild(datasourceName: string, datasourcePath: string) {
+  // Building the graph scheme
+  console.log("📦 ### 2/3 Building the graph scheme for...", datasourceName);
+  exec(`graph build`, datasourcePath);
+}
+
+/**
+ * taskDeployToNetwork()
+ *
+ * Deploys subgraph to The Graph decentralized service
+ * @param datasourceName
+ * @param datasourcePath
+ * @param subgraphSlug
+ */
+function taskDeployToNetwork(
+  datasourceName: string,
+  datasourcePath: string,
+  subgraphSlug: string
+) {
+  console.log(
+    "📦 ### 3/3 Build complete, preparing deployment for ...",
+    datasourceName
+  );
+
+  console.log(
+    `
+    ==== READY TO DEPLOY SUBGRAPH... ${datasourceName} ====
+    ⚠️  IMPORTANT: When prompted, enter a version label for the subgraph!
+    `
+  );
+
+  // Deploy subgraph <SUBGRAPH_SLUG>
+  console.log("🏎  ### Deploying subgraph...");
+
+  exec(
+    `graph auth --studio ${process.env.GRAPH_DEPLOYMENT_KEY}`,
+    datasourcePath
+  );
+  exec(`graph deploy --studio ${subgraphSlug}`, datasourcePath);
+}
+
+/**
+ * taskDeployToHosted()
+ *
+ * Deploys the subgraph to The Graph hosted service
+ * @param datasourcePath
+ * @param subgraphSlug
+ */
+function taskDeployToHosted(datasourcePath: string, subgraphSlug: string) {
+  exec(
+    `graph deploy --access-token ${process.env.GRAPH_ACCESS_TOKEN} --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ ${GITHUB_USERNAME}/${subgraphSlug}`,
+    datasourcePath
+  );
+}
+
+/**
+ * taskDeployToLocal()
+ *
+ * Allocates the subgraph name in the Graph Node and deploys the subgraphs to your local Graph Node
+ * @param datasourcePath
+ * @param subgraphSlug
+ */
+function taskDeployToLocal(datasourcePath: string, subgraphSlug: string) {
+  exec(
+    `graph create tribute/${subgraphSlug} --node http://127.0.0.1:8020`,
+    datasourcePath
+  );
+  exec(
+    `graph deploy tribute/${subgraphSlug} --ipfs http://localhost:5001 --node http://127.0.0.1:8020`,
+    datasourcePath
+  );
+}
