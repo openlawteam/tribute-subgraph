@@ -1,14 +1,14 @@
 import { Address, BigInt, log } from "@graphprotocol/graph-ts";
 
-import { CouponRedeemed } from "../../generated/CouponOnboarding/CouponOnboardingContract";
-import { Coupon } from "../../generated/schema";
+import { CouponRedeemed } from "./generated/CouponOnboarding/CouponOnboarding";
+import { Coupon } from "./generated/schema";
 
 function loadOrCreateCoupon(
   daoAddress: Address,
   authorizedMember: Address,
   nonce: BigInt
 ): Coupon {
-  // Set to `${tribute.daoAddress}-coupon-${nonce}-${authorizedMember}`
+  // Set to `${daoAddress}-coupon-${nonce}-${authorizedMember}`
   let couponId = daoAddress
     .toHex()
     .concat("-coupon-")
@@ -46,7 +46,6 @@ export function handleCouponRedeemed(event: CouponRedeemed): void {
   coupon.authorizedMember = event.params.authorizedMember;
   coupon.amount = event.params.amount;
   coupon.nonce = event.params.nonce;
-  coupon.tributeDao = event.params.daoAddress.toHexString();
 
   coupon.save();
 }

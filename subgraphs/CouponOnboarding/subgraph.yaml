@@ -4,7 +4,6 @@ repository: https://github.com/openlawteam/tribute-subgraph
 schema:
   file: ./schema.graphql
 dataSources:
-  # ====================================== DaoFactory ====================================
   - kind: ethereum/contract
     name: CouponOnboarding
     network: mainnet
@@ -20,7 +19,7 @@ dataSources:
         - Coupon
       abis:
         - name: CouponOnboarding
-          file: ../../build/artifacts/build/contracts/core/DaoFactory.sol/DaoFactory.json
+          file: ../../build/artifacts/build/contracts/adapters/CouponOnboarding.sol/CouponOnboardingContract.json
       eventHandlers:
         - event: CouponRedeemed(address,uint256,address,uint256)
           handler: handleCouponRedeemed

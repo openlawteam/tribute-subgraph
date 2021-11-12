@@ -4,7 +4,6 @@ repository: https://github.com/openlawteam/tribute-subgraph
 schema:
   file: ./schema.graphql
 dataSources:
-  # ====================================== DaoFactory ====================================
   - kind: ethereum/contract
     name: BankExtension
     network: mainnet
@@ -18,9 +17,9 @@ dataSources:
       language: wasm/assemblyscript
       entities:
         - Bank
-        - TokenHolder
-        - Token
         - Member
+        - Token
+        - TokenHolder
       abis:
         - name: BankExtension
           file: ../../build/artifacts/build/contracts/extensions/bank/Bank.sol/BankExtension.json
