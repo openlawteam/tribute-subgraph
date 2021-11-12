@@ -5,8 +5,8 @@ import {
   CollectedNFT,
   WithdrawnNFT,
   TransferredNFT,
-} from "../../generated/templates/NFTExtension/NFTExtension";
-import { NFT, NFTCollection } from "../../generated/schema";
+} from "./generated/NFTExtension/NFTExtension";
+import { NFT, NFTCollection } from "./generated/schema";
 
 function loadOrCreateNFT(
   extensionAddress: Address,
