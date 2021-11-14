@@ -1,12 +1,14 @@
-import { Address, BigInt, log } from "@graphprotocol/graph-ts";
+import { Address, BigInt, Bytes, log } from "@graphprotocol/graph-ts";
 
 import {
   BankExtension,
   NewBalance,
   Withdraw,
 } from "./generated/BankExtension/BankExtension";
+import { DaoRegistry } from "./generated/BankExtension/DaoRegistry";
 import { ERC20Extension } from "./generated/BankExtension/ERC20Extension";
-import { Bank, Member, Token, TokenHolder } from "./generated/schema";
+
+import { Bank, TributeDao, Token, TokenHolder } from "./generated/schema";
 
 // Reserved Internal Addresses
 let ESCROW: Address = Address.fromString(
@@ -59,14 +61,22 @@ function internalTransfer(
     // check if the DAO has an ERC20 extension and assign members balance
     internalERC20Balance(daoAddress, memberAddress);
 
-    let member = Member.load(memberAddress.toHex());
+    // let member = Member.load(memberAddress.toHex());
 
-    if (member == null) {
-      member = new Member(memberAddress.toHex());
-      member.createdAt = createdAt;
-      member.memberAddress = memberAddress;
-      member.delegateKey = memberAddress;
-      member.isDelegated = false;
+    // if (member == null) {
+    //   member = new Member(memberAddress.toHex());
+    //   member.createdAt = createdAt;
+    //   member.memberAddress = memberAddress;
+    //   member.delegateKey = memberAddress;
+    //   member.isDelegated = false;
+    // }
+
+    let tokenHolder = TokenHolder.load(memberAddress.toHex());
+
+    if (tokenHolder == null) {
+      tokenHolder = new TokenHolder(memberAddress.toHex());
+      tokenHolder.createdAt = createdAt;
+      tokenHolder.memberAddress = memberAddress;
     }
 
     /**
@@ -75,20 +85,20 @@ function internalTransfer(
 
     // get balanceOf member units
     let balanceOfUNITS = bankRegistry.balanceOf(memberAddress, UNITS);
-    member.units = balanceOfUNITS;
+    tokenHolder.totalUnits = balanceOfUNITS;
 
     // omit the `TOTAL` & `GUILD` addresses from the ragequit check
-    if (
-      TOTAL.toHex() != memberAddress.toHex() &&
-      GUILD.toHex() != memberAddress.toHex()
-    ) {
-      let didFullyRagequit = balanceOfUNITS.equals(BigInt.fromI32(0));
+    // if (
+    //   TOTAL.toHex() != memberAddress.toHex() &&
+    //   GUILD.toHex() != memberAddress.toHex()
+    // ) {
+    //   let didFullyRagequit = balanceOfUNITS.equals(BigInt.fromI32(0));
 
-      // fully raged quit
-      member.didFullyRagequit = didFullyRagequit;
-    }
+    //   // fully raged quit
+    //   member.didFullyRagequit = didFullyRagequit;
+    // }
 
-    member.save();
+    tokenHolder.save();
   }
 
   // get total units minted for the DAO
@@ -115,15 +125,26 @@ function internalERC20Balance(
   memberAddress: Address
 ): void {
   // check and get ERC20 extension address
-  let erc20ExtensionId = daoAddress
-    .toHex()
-    .concat("-extension-")
-    .concat(ERC20_EXTENSION_ID);
-  let erc20Extension = Extension.load(erc20ExtensionId);
+  // let erc20ExtensionId = daoAddress
+  //   .toHex()
+  //   .concat("-extension-")
+  //   .concat(ERC20_EXTENSION_ID);
+  // let erc20Extension = Extension.load(erc20ExtensionId);
 
-  if (erc20Extension != null) {
+  /**
+   * @todo
+   * get extension contract address using the extension id
+   */
+
+  let daoRegistryContract = DaoRegistry.bind(daoAddress);
+  let erc20ExtensionAddress = daoRegistryContract.getExtensionAddress(
+    Bytes.fromHexString(ERC20_EXTENSION_ID) as Bytes
+  );
+
+  if (erc20ExtensionAddress != null) {
     let erc20ExtensionRegistry = ERC20Extension.bind(
-      Address.fromString(erc20Extension.extensionAddress.toHexString())
+      erc20ExtensionAddress
+      // Address.fromString(erc20Extension.extensionAddress.toHexString())
     );
 
     // erc20 token details
@@ -136,7 +157,8 @@ function internalERC20Balance(
     let tokenId = daoAddress
       .toHex()
       .concat("-token-")
-      .concat(erc20Extension.extensionAddress.toHex());
+      .concat(erc20ExtensionAddress.toHexString());
+    // .concat(erc20Extension.extensionAddress.toHex());
 
     let token = Token.load(tokenId);
 
@@ -145,7 +167,7 @@ function internalERC20Balance(
 
       token.symbol = symbol;
       token.name = name;
-      token.tokenAddress = erc20Extension.extensionAddress;
+      token.tokenAddress = erc20ExtensionAddress; //erc20Extension.extensionAddress;
     }
 
     token.totalSupply = totalSupply;
@@ -163,7 +185,7 @@ function internalERC20Balance(
     if (tokenHolder == null) {
       tokenHolder = new TokenHolder(tokenHolderId);
 
-      tokenHolder.member = memberAddress.toHex();
+      // tokenHolder.member = memberAddress.toHex();
       tokenHolder.token = tokenId;
     }
 

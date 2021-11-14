@@ -12,32 +12,16 @@ enum VotingState {
   GRACE_PERIOD
 }
 
-type TributeDao @entity {
-  "Unique identifier and primary key of the `TributeDao` entity"
-  id: ID! # Set to `${tribute.id}
-  "The address of the DAO"
-  daoAddress: Bytes
-  "The name of the DAO"
-  daoName: String
-  "The DAO creator address"
-  creator: Bytes
-  createdAt: String
-  "Total units minted for the DAO"
-  totalUnits: String
-  "Total units issued and outstanding"
-  totalUnitsIssued: String
-}
-
 type Member @entity {
   "Unique identifier and primary key of the `Member` entity"
   id: ID! # Set to `${member.id}`
-  memberAddress: Bytes
-  createdAt: String
+  # createdAt: String
   delegateKey: Bytes
-  units: BigInt!
+  # isDelegated: Boolean
+  memberAddress: Bytes
+  # units: BigInt!
   proposals: [Proposal!] @derivedFrom(field: "member")
-  didFullyRagequit: Boolean
-  isDelegated: Boolean
+  # didFullyRagequit: Boolean
 }
 
 type Proposal @entity {

@@ -198,7 +198,7 @@ export function handleSponsoredProposal(event: SponsoredProposal): void {
 }
 
 export function handleProcessedProposal(event: ProcessedProposal): void {
-  let processedAt = event.block.timestamp.toString();
+  // let processedAt = event.block.timestamp.toString();
   // let blockNumber = event.block.number;
 
   log.info("=============== ProcessedProposal event fired. proposalId: {}", [
@@ -236,8 +236,8 @@ export function handleUpdateDelegateKey(event: UpdateDelegateKey): void {
 
   if (member) {
     member.delegateKey = delegateKey;
-    member.isDelegated =
-      event.params.memberAddress != event.params.newDelegateKey;
+    // member.isDelegated =
+    //   event.params.memberAddress != event.params.newDelegateKey;
 
     member.save();
   }

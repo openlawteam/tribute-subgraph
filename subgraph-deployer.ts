@@ -18,8 +18,8 @@ const SUBGRAPH_SLUGS = {
    * CORE
    * Mandatory core subgraphs
    */
-  DaoRegistry: "dao-registry-dev",
-  // BankExtension: "tribute-dao-bank-extension-dev",
+  // DaoRegistry: "dao-registry-dev",
+  BankExtension: "bank-extension-dev2",
 
   /**
    * ADAPTERS
