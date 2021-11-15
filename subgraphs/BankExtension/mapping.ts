@@ -31,8 +31,8 @@ let UNITS: Address = Address.fromString(
  * Extensions
  */
 
-let BANK_EXTENSION_ID: string =
-  "0xea0ca03c7adbe41dc655fec28a9209dc8e6e042f3d991a67765ba285b9cf73a0";
+// let BANK_EXTENSION_ID: string =
+//   "0xea0ca03c7adbe41dc655fec28a9209dc8e6e042f3d991a67765ba285b9cf73a0";
 
 let ERC20_EXTENSION_ID: string =
   "0x77d63af07d7aad7f422b79cf9d7285aec3f3e6f32e6e4391f1ce842d752663fd";
@@ -61,44 +61,19 @@ function internalTransfer(
     // check if the DAO has an ERC20 extension and assign members balance
     internalERC20Balance(daoAddress, memberAddress);
 
-    // let member = Member.load(memberAddress.toHex());
+    let tokenHolderId = daoAddress
+    .toHex()
+    .concat("-tokenholder-")
+    .concat(memberAddress.toHex());
 
-    // if (member == null) {
-    //   member = new Member(memberAddress.toHex());
-    //   member.createdAt = createdAt;
-    //   member.memberAddress = memberAddress;
-    //   member.delegateKey = memberAddress;
-    //   member.isDelegated = false;
-    // }
+    let tokenHolder = TokenHolder.load(tokenHolderId);
 
-    let tokenHolder = TokenHolder.load(memberAddress.toHex());
-
-    if (tokenHolder == null) {
-      tokenHolder = new TokenHolder(memberAddress.toHex());
+    if (tokenHolder) {
       tokenHolder.createdAt = createdAt;
       tokenHolder.memberAddress = memberAddress;
+
+      tokenHolder.save();
     }
-
-    /**
-     * get `balanceOf` for members UNITS
-     */
-
-    // get balanceOf member units
-    let balanceOfUNITS = bankRegistry.balanceOf(memberAddress, UNITS);
-    tokenHolder.totalUnits = balanceOfUNITS;
-
-    // omit the `TOTAL` & `GUILD` addresses from the ragequit check
-    // if (
-    //   TOTAL.toHex() != memberAddress.toHex() &&
-    //   GUILD.toHex() != memberAddress.toHex()
-    // ) {
-    //   let didFullyRagequit = balanceOfUNITS.equals(BigInt.fromI32(0));
-
-    //   // fully raged quit
-    //   member.didFullyRagequit = didFullyRagequit;
-    // }
-
-    tokenHolder.save();
   }
 
   // get total units minted for the DAO
@@ -124,50 +99,37 @@ function internalERC20Balance(
   daoAddress: Address,
   memberAddress: Address
 ): void {
-  // check and get ERC20 extension address
-  // let erc20ExtensionId = daoAddress
-  //   .toHex()
-  //   .concat("-extension-")
-  //   .concat(ERC20_EXTENSION_ID);
-  // let erc20Extension = Extension.load(erc20ExtensionId);
-
-  /**
-   * @todo
-   * get extension contract address using the extension id
-   */
-
   let daoRegistryContract = DaoRegistry.bind(daoAddress);
+  // get ERC20 extension address
   let erc20ExtensionAddress = daoRegistryContract.getExtensionAddress(
     Bytes.fromHexString(ERC20_EXTENSION_ID) as Bytes
   );
 
-  if (erc20ExtensionAddress != null) {
+  if (erc20ExtensionAddress) {
     let erc20ExtensionRegistry = ERC20Extension.bind(
       erc20ExtensionAddress
-      // Address.fromString(erc20Extension.extensionAddress.toHexString())
     );
 
     // erc20 token details
     let name = erc20ExtensionRegistry.name();
     let symbol = erc20ExtensionRegistry.symbol();
     let totalSupply = erc20ExtensionRegistry.totalSupply();
-
     let balance = erc20ExtensionRegistry.balanceOf(memberAddress);
 
     let tokenId = daoAddress
       .toHex()
       .concat("-token-")
       .concat(erc20ExtensionAddress.toHexString());
-    // .concat(erc20Extension.extensionAddress.toHex());
 
     let token = Token.load(tokenId);
 
     if (token == null) {
       token = new Token(tokenId);
 
-      token.symbol = symbol;
+      token.balance = balance;
       token.name = name;
-      token.tokenAddress = erc20ExtensionAddress; //erc20Extension.extensionAddress;
+      token.symbol = symbol;
+      token.tokenAddress = erc20ExtensionAddress;
     }
 
     token.totalSupply = totalSupply;
@@ -184,14 +146,10 @@ function internalERC20Balance(
 
     if (tokenHolder == null) {
       tokenHolder = new TokenHolder(tokenHolderId);
-
-      // tokenHolder.member = memberAddress.toHex();
       tokenHolder.token = tokenId;
+
+      tokenHolder.save();
     }
-
-    tokenHolder.balance = balance;
-
-    tokenHolder.save();
   }
 }
 
@@ -213,7 +171,6 @@ export function handleNewBalance(event: NewBalance): void {
   );
 }
 
-// event Withdraw(address member, address tokenAddr, uint256 amount);
 export function handleWithdraw(event: Withdraw): void {
   log.info(
     "================ Withdraw event fired. account {}, tokenAddr {}, amount {}",

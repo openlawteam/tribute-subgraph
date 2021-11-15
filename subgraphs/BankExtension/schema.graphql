@@ -10,18 +10,6 @@ type TributeDao @entity {
   createdAt: String
 }
 
-# type Member @entity {
-#   "Unique identifier and primary key of the `Member` entity"
-#   id: ID! # Set to `${member.id}`
-#   # memberAddress: Bytes
-#   # createdAt: String
-#   # delegateKey: Bytes
-#   # didFullyRagequit: Boolean
-#   # isDelegated: Boolean
-#   # tokenHoldings: [TokenHolder!] @derivedFrom(field: "member")
-#   # units: BigInt!
-# }
-
 type Bank @entity {
   "Unique identifier and primary key of the `Bank` entity"
   id: ID! # Set to `${tribute.id}-bank-${bank.id}`
@@ -36,18 +24,16 @@ type Token @entity {
   id: ID! # Set to `${tribute.id}-token-${token.id}`
   name: String
   symbol: String
+  balance: BigInt
   tokenAddress: Bytes!
   totalSupply: BigInt
-  holders: [TokenHolder!] @derivedFrom(field: "token")
+  tokenHolders: [TokenHolder!]! @derivedFrom(field: "token")
 }
 
 type TokenHolder @entity {
+  "Unique identifier and primary key of the `TokenHolder` entity"
   id: ID! # Set to `${tribute.id}-tokenholder-${memberAddress.id}`
   createdAt: String
-  # member: Member
   memberAddress: Bytes
-  balance: BigInt
-  totalUnits: BigInt!
-  token: Token #`${tribute.id}-token-${token.id}`
-  tokenHoldings: [Token!] @derivedFrom(field: "holders")
+  token: Token! # `${tribute.id}-token-${token.id}`
 }
