@@ -19,7 +19,7 @@ const SUBGRAPH_SLUGS = {
    * Mandatory core subgraphs
    */
   // DaoRegistry: "dao-registry-dev",
-  BankExtension: "bank-extension-dev2",
+  BankExtension: "bank-extension-dev",
 
   /**
    * ADAPTERS
@@ -75,52 +75,13 @@ let executedDeployments: number = 0;
           datasourceName
         )}`;
 
-        // Create the graph code generation files
-        // console.log(
-        //   "📦 ### 1/3 Creating the graph scheme for...",
-        //   datasourceName
-        // );
-        // exec(`graph codegen`, datasourcePath);
+        // 📦 ### 1/2 Create the graph code generation files
         taskGraphCodegen(datasourceName, datasourcePath);
 
-        // Building the graph scheme
-        // console.log(
-        //   "📦 ### 2/3 Building the graph scheme for...",
-        //   datasourceName
-        // );
-        // exec(`graph build`, datasourcePath);
+        // 📦 ### 2/2 Building the graph scheme
         taskGraphBuild(datasourceName, datasourcePath);
 
-        // console.log(
-        //   "📦 ### 3/3 Build complete, preparing deployment for ...",
-        //   datasourceName
-        // );
-
-        // if (NETWORK === NETWORKS.MAINNET) {
-        //   console.log(
-        //     `
-        //   ==== READY TO DEPLOY SUBGRAPH... ${datasourceName} ====
-        //   ⚠️  IMPORTANT: When prompted, enter a version label for the subgraph!
-        //   `
-        //   );
-        // }
-
-        // Deploy subgraph <SUBGRAPH_SLUG>
-        // console.log("🏎  ### Deploying subgraph...");
-
-        // if (NETWORK === NETWORKS.MAINNET) {
-        //   exec(
-        //     `graph auth --studio ${process.env.GRAPH_DEPLOYMENT_KEY}`,
-        //     datasourcePath
-        //   );
-        //   exec(`graph deploy --studio ${subgraphSlug}`, datasourcePath);
-        // } else {
-        //   exec(
-        //     `graph deploy --access-token ${process.env.GRAPH_ACCESS_TOKEN} --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ ${GITHUB_USERNAME}/${subgraphSlug}`,
-        //     datasourcePath
-        //   );
-        // }
-
+        // 🏎  ### Deploy subgraph <SUBGRAPH_SLUG>
         if (NETWORK === NETWORKS.MAINNET) {
           taskDeployToNetwork(datasourceName, datasourcePath, subgraphSlug);
         } else if (NETWORK === NETWORKS.RINKEBY) {
@@ -185,11 +146,6 @@ function taskDeployToNetwork(
   datasourcePath: string,
   subgraphSlug: string
 ) {
-  console.log(
-    "📦 ### 3/3 Build complete, preparing deployment for ...",
-    datasourceName
-  );
-
   console.log(
     `
     ==== READY TO DEPLOY SUBGRAPH... ${datasourceName} ====
