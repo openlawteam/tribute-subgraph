@@ -1,4 +1,4 @@
-import { Address, BigInt, Bytes, log } from "@graphprotocol/graph-ts";
+import { Address, Bytes, log } from "@graphprotocol/graph-ts";
 
 import {
   BankExtension,
@@ -8,7 +8,7 @@ import {
 import { DaoRegistry } from "./generated/BankExtension/DaoRegistry";
 import { ERC20Extension } from "./generated/BankExtension/ERC20Extension";
 
-import { Bank, TributeDao, Token, TokenHolder } from "./generated/schema";
+import { Bank, Token, TokenHolder, TributeDao } from "./generated/schema";
 
 // Reserved Internal Addresses
 let ESCROW: Address = Address.fromString(
@@ -30,9 +30,6 @@ let UNITS: Address = Address.fromString(
 /**
  * Extensions
  */
-
-// let BANK_EXTENSION_ID: string =
-//   "0xea0ca03c7adbe41dc655fec28a9209dc8e6e042f3d991a67765ba285b9cf73a0";
 
 let ERC20_EXTENSION_ID: string =
   "0x77d63af07d7aad7f422b79cf9d7285aec3f3e6f32e6e4391f1ce842d752663fd";
@@ -58,6 +55,20 @@ function internalTransfer(
     MEMBER_COUNT.toHex() != tokenAddress.toHex() &&
     ESCROW.toHex() != tokenAddress.toHex()
   ) {
+    // create tribute dao entity
+    let tributeDao = TributeDao.load(daoAddress.toHex());
+
+    if (tributeDao == null) {
+      let daoRegistryContract = DaoRegistry.bind(daoAddress);
+
+      tributeDao = new TributeDao(daoAddress.toHex());
+
+      tributeDao.createdAt = createdAt;
+      tributeDao.daoAddress = daoAddress;
+
+      tributeDao.save();
+    }
+
     // check if the DAO has an ERC20 extension and assign members balance
     internalERC20Balance(daoAddress, memberAddress);
 
@@ -87,12 +98,16 @@ function internalTransfer(
 
   let bank = Bank.load(daoAddress.toHexString());
 
-  if (bank != null) {
-    bank.totalUnits = balanceOfTotalUnits.toString();
-    bank.totalUnitsIssued = balanceOfTotalUnitsIssued.toString();
+  if (bank == null) {
+    bank = new Bank(daoAddress.toHexString())
+    bank.bankAddress = extensionAddress;
+  } 
 
-    bank.save();
-  }
+  // update the accounting for dao bank 
+  bank.totalUnits = balanceOfTotalUnits.toString();
+  bank.totalUnitsIssued = balanceOfTotalUnitsIssued.toString();
+
+  bank.save();
 }
 
 function internalERC20Balance(
@@ -146,6 +161,7 @@ function internalERC20Balance(
 
     if (tokenHolder == null) {
       tokenHolder = new TokenHolder(tokenHolderId);
+      // @todo support one-to-many tokens per holder
       tokenHolder.token = tokenId;
 
       tokenHolder.save();

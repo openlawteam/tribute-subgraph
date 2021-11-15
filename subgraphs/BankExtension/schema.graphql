@@ -1,13 +1,9 @@
 type TributeDao @entity {
   "Unique identifier and primary key of the `TributeDao` entity"
   id: ID! # Set to `${tribute.id}
+  createdAt: String
   "The address of the DAO"
   daoAddress: Bytes
-  "The name of the DAO"
-  daoName: String
-  "The DAO creator address"
-  creator: Bytes
-  createdAt: String
 }
 
 type Bank @entity {
