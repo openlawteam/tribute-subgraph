@@ -1,6 +1,7 @@
 type TributeDao @entity {
   "Unique identifier and primary key of the `TributeDao` entity"
   id: ID! # Set to `${tribute.id}
+  "The timestamp of the DAO creation"
   createdAt: String!
   "The address of the DAO"
   daoAddress: Bytes!
@@ -11,7 +12,9 @@ type Bank @entity {
   id: ID! # Set to `${tribute.id}-bank-${bank.id}`
   "The bank of the DAO"
   bankAddress: Bytes!
+  "The total units minted for the DAO"
   totalUnits: String!
+  "The total units issued and outstanding in the DAO (not owned by guild bank)"
   totalUnitsIssued: String!
 }
 
