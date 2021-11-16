@@ -59,8 +59,6 @@ function internalTransfer(
     let tributeDao = TributeDao.load(daoAddress.toHex());
 
     if (tributeDao == null) {
-      let daoRegistryContract = DaoRegistry.bind(daoAddress);
-
       tributeDao = new TributeDao(daoAddress.toHex());
 
       tributeDao.createdAt = createdAt;
@@ -71,20 +69,6 @@ function internalTransfer(
 
     // check if the DAO has an ERC20 extension and assign members balance
     internalERC20Balance(daoAddress, memberAddress);
-
-    let tokenHolderId = daoAddress
-    .toHex()
-    .concat("-tokenholder-")
-    .concat(memberAddress.toHex());
-
-    let tokenHolder = TokenHolder.load(tokenHolderId);
-
-    if (tokenHolder) {
-      tokenHolder.createdAt = createdAt;
-      tokenHolder.memberAddress = memberAddress;
-
-      tokenHolder.save();
-    }
   }
 
   // get total units minted for the DAO
@@ -126,10 +110,31 @@ function internalERC20Balance(
     );
 
     // erc20 token details
+    let balance = erc20ExtensionRegistry.balanceOf(memberAddress);
     let name = erc20ExtensionRegistry.name();
     let symbol = erc20ExtensionRegistry.symbol();
     let totalSupply = erc20ExtensionRegistry.totalSupply();
-    let balance = erc20ExtensionRegistry.balanceOf(memberAddress);
+
+    let tokenHolderId = daoAddress
+      .toHex()
+      .concat("-tokenholder-")
+      .concat(erc20ExtensionAddress.toHexString())
+      .concat("-")
+      .concat(memberAddress.toHex());
+
+    let tokenHolder = TokenHolder.load(tokenHolderId);
+
+    if (tokenHolder == null) {
+      tokenHolder = new TokenHolder(tokenHolderId);
+
+      tokenHolder.name = name;
+      tokenHolder.symbol = symbol;
+      tokenHolder.tokenAddress = erc20ExtensionAddress;
+      tokenHolder.memberAddress = memberAddress;
+    }
+
+    tokenHolder.balance = balance;
+    tokenHolder.save();
 
     let tokenId = daoAddress
       .toHex()
@@ -141,31 +146,13 @@ function internalERC20Balance(
     if (token == null) {
       token = new Token(tokenId);
 
-      token.balance = balance;
       token.name = name;
       token.symbol = symbol;
       token.tokenAddress = erc20ExtensionAddress;
     }
 
     token.totalSupply = totalSupply;
-
     token.save();
-
-    // update holder
-    let tokenHolderId = daoAddress
-      .toHex()
-      .concat("-tokenholder-")
-      .concat(memberAddress.toHex());
-
-    let tokenHolder = TokenHolder.load(tokenHolderId);
-
-    if (tokenHolder == null) {
-      tokenHolder = new TokenHolder(tokenHolderId);
-      // @todo support one-to-many tokens per holder
-      tokenHolder.token = tokenId;
-
-      tokenHolder.save();
-    }
   }
 }
 

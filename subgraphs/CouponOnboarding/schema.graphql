@@ -2,11 +2,17 @@ type Coupon @entity {
   "Unique identifier and primary key of the `Coupon` entity"
   id: ID! # Set to `${tribute.daoAddress}-coupon-${nonce}-${authorizedMember}`
   "Redemption date timestamp"
-  redeemedAt: String
+  redeemedAt: String!
   "Authorized member address"
-  authorizedMember: Bytes
+  authorizedMember: Bytes! #Member!
   "Redemption amount"
-  amount: BigInt
+  amount: BigInt!
   "Redemption nonce"
-  nonce: BigInt
+  nonce: BigInt!
 }
+
+# type Member @entity {
+#   id: ID!
+#   memberAddress: Bytes
+#   coupons: [Coupon!] @derivedFrom(field: "authorizedMember")
+# }

@@ -6,11 +6,11 @@ schema:
 dataSources:
   - kind: ethereum/contract
     name: CouponOnboarding
-    network: mainnet
+    network: rinkeby
     source:
       address: "0xFF5181e2210AB92a5c9db93729Bc47332555B9E9"
       abi: CouponOnboarding
-      startBlock: 68
+      startBlock: 9344065
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5

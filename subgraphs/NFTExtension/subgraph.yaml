@@ -6,11 +6,11 @@ schema:
 dataSources:
   - kind: ethereum/contract
     name: NFTExtension
-    network: mainnet
+    network: rinkeby
     source:
       address: "0x3408fb50BEeEF75145EC4a51Ba819cb7c71d2732"
       abi: NFTExtension
-      startBlock: 7
+      startBlock: 9344065
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5

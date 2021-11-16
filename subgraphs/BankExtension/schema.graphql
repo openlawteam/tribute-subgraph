@@ -1,9 +1,9 @@
 type TributeDao @entity {
   "Unique identifier and primary key of the `TributeDao` entity"
   id: ID! # Set to `${tribute.id}
-  createdAt: String
+  createdAt: String!
   "The address of the DAO"
-  daoAddress: Bytes
+  daoAddress: Bytes!
 }
 
 type Bank @entity {
@@ -11,25 +11,25 @@ type Bank @entity {
   id: ID! # Set to `${tribute.id}-bank-${bank.id}`
   "The bank of the DAO"
   bankAddress: Bytes!
-  totalUnits: String
-  totalUnitsIssued: String
+  totalUnits: String!
+  totalUnitsIssued: String!
 }
 
 type Token @entity {
   "Unique identifier and primary key of the `Token` entity"
   id: ID! # Set to `${tribute.id}-token-${token.id}`
-  name: String
-  symbol: String
-  balance: BigInt
+  name: String!
+  symbol: String!
   tokenAddress: Bytes!
-  totalSupply: BigInt
-  tokenHolders: [TokenHolder!]! @derivedFrom(field: "token")
+  totalSupply: BigInt!
 }
 
 type TokenHolder @entity {
-  "Unique identifier and primary key of the `TokenHolder` entity"
-  id: ID! # Set to `${tribute.id}-tokenholder-${memberAddress.id}`
-  createdAt: String
-  memberAddress: Bytes
-  token: Token! # `${tribute.id}-token-${token.id}`
+  "Unique identifier and primary key of the `Token` entity"
+  id: ID! # Set to `${tribute.id}-tokenholder-${token.id}-${memberAddress.id}`
+  balance: BigInt!
+  name: String!
+  symbol: String!
+  tokenAddress: Bytes!
+  memberAddress: Bytes!
 }
