@@ -116,7 +116,7 @@ let executedDeployments: number = 0;
  */
 function taskGraphCodegen(datasourceName: string, datasourcePath: string) {
   // Create the graph code generation files
-  console.log("📦 ### 1/3 Creating the graph scheme for...", datasourceName);
+  console.log("📦 ### 1/2 Creating the graph scheme for...", datasourceName);
   exec(`graph codegen`, datasourcePath);
 }
 
@@ -129,7 +129,7 @@ function taskGraphCodegen(datasourceName: string, datasourcePath: string) {
  */
 function taskGraphBuild(datasourceName: string, datasourcePath: string) {
   // Building the graph scheme
-  console.log("📦 ### 2/3 Building the graph scheme for...", datasourceName);
+  console.log("📦 ### 2/2 Building the graph scheme for...", datasourceName);
   exec(`graph build`, datasourcePath);
 }
 
