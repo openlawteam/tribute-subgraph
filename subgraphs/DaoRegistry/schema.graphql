@@ -37,7 +37,7 @@ type Proposal @entity {
   "Adapter ID of the proposal"
   adapterId: Bytes
   "Adapter contract address of the proposal"
-  adapterAddr: Bytes
+  adapterAddress: Bytes
   "Voting adapter address"
   votingAdapter: Bytes
 
