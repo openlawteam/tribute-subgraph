@@ -19,13 +19,13 @@ const SUBGRAPH_SLUGS = {
    * Mandatory core subgraphs
    */
   // DaoRegistry: "dao-registry-dev",
-  BankExtension: "bank-extension-dev",
+  // BankExtension: "bank-extension-dev",
 
   /**
    * ADAPTERS
    * Add your adpater subgraphs datasource and subgraph slug
    */
-  // CouponOnboarding: "coupon-onboarding-dev",
+  CouponOnboarding: "coupon-onboarding-dev",
 
   /**
    * EXTENSIONS

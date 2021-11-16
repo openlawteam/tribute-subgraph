@@ -8,9 +8,9 @@ dataSources:
     name: CouponOnboarding
     network: rinkeby
     source:
-      address: "0xFF5181e2210AB92a5c9db93729Bc47332555B9E9"
+      address: "0x3d3CaeEa18A3b464859253619e26F1C76F12e31A"
       abi: CouponOnboarding
-      startBlock: 9344065
+      startBlock: 9460062
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
