@@ -34,10 +34,10 @@ type Proposal @entity {
   processedBy: Bytes
   member: Member
 
-  "Adapter or extension ID of the proposal"
-  adapterOrExtensionId: Bytes
-  "Adapter or extension contract address of the proposal"
-  adapterOrExtensionAddr: Bytes
+  "Adapter ID of the proposal"
+  adapterId: Bytes
+  "Adapter contract address of the proposal"
+  adapterAddr: Bytes
   "Voting adapter address"
   votingAdapter: Bytes
 

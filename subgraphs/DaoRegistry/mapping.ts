@@ -154,7 +154,8 @@ export function handleSubmittedProposal(event: SubmittedProposal): void {
   if (proposal == null) {
     proposal = new Proposal(daoProposalId);
 
-    proposal.adapterOrExtensionId = inverseAdapter.value0;
+    proposal.adapterId = inverseAdapter.value0;
+    proposal.flags = event.params.flags;
     proposal.submittedBy = submittedBy;
     proposal.proposalId = proposalId;
     proposal.sponsored = false;
