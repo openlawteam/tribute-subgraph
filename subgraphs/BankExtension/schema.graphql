@@ -18,6 +18,14 @@ type Bank @entity {
   totalUnitsIssued: String!
 }
 
+type Member @entity {
+  "Unique identifier and primary key of the `Member` entity"
+  id: ID!
+  createdAt: String!
+  memberAddress: Bytes!
+  units: BigInt!
+}
+
 type Token @entity {
   "Unique identifier and primary key of the `Token` entity"
   id: ID! # Set to `${tribute.id}-token-${token.id}`
