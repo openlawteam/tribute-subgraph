@@ -15,18 +15,14 @@ enum VotingState {
 type Member @entity {
   "Unique identifier and primary key of the `Member` entity"
   id: ID! # Set to `${member.id}`
-  # createdAt: String
   delegateKey: Bytes
-  # isDelegated: Boolean
   memberAddress: Bytes
-  # units: BigInt!
   proposals: [Proposal!] @derivedFrom(field: "member")
-  # didFullyRagequit: Boolean
 }
 
 type Proposal @entity {
   "Unique identifier and primary key of the `Proposal` entity"
-  id: ID! # Set to `${tribute.id}-proposal-${proposal.id}`
+  id: ID! # Set to `${daoAddress}-proposal-${proposal.id}`
   proposalId: Bytes!
   flags: BigInt!
   submittedBy: Bytes
@@ -58,7 +54,6 @@ type Proposal @entity {
   isChallenged: Boolean
   stepRequested: BigInt
   forceFailed: Boolean
-  # fallbackVotes: BigInt
   fallbackVotesCount: BigInt
 
   # ONCHAIN VOTES: additional info
@@ -70,7 +65,7 @@ type Proposal @entity {
 
 type Vote @entity {
   "Unique identifier and primary key of the `Vote` entity"
-  id: ID! # Set to `${tribute.id}-vote-${proposal.id}`
+  id: ID! # Set to `${daoAddress}-vote-${proposal.id}`
   nbNo: BigInt
   nbYes: BigInt
   adapterName: VotingAdapterName!
@@ -80,8 +75,10 @@ type Vote @entity {
 
 type Adapter @entity {
   "Unique identifier and primary key of the `Adapter` entity"
-  id: ID! # Set to `${tribute.id}-adapter-${adapter.id}`
+  id: ID! # Set to `${daoAddress}-adapter-${adapter.id}`
+  "Adapter hashed ID"
   adapterId: Bytes!
+  "Adapter contract address"
   adapterAddress: Bytes!
   "Adapter acl (access control layer)"
   acl: BigInt!
@@ -89,9 +86,9 @@ type Adapter @entity {
 
 type Extension @entity {
   "Unique identifier and primary key of the `Extension` entity"
-  id: ID! # Set to `${tribute.id}-extension-${extension.id}`
+  id: ID! # Set to `${daoAddress}-extension-${extension.id}`
   "Extension contract address"
   extensionAddress: Bytes!
-  "Extension ID"
+  "Extension hashed ID"
   extensionId: Bytes!
 }

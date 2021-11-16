@@ -19,9 +19,6 @@ import { IVoting } from "./generated/DaoRegistry/IVoting";
 
 import { Adapter, Extension, Proposal, Member, Vote } from "./generated/schema";
 
-// import { loadOrCreateExtensionEntity } from "../z_TO_REMOVE_mappings/helpers/extension-entities";
-// import { loadProposalAndSaveVoteResults } from "../z_TO_REMOVE_mappings/helpers/vote-results";
-
 export function loadProposalAndSaveVoteResults(
   daoAddress: Address,
   proposalId: Bytes
@@ -158,7 +155,6 @@ export function handleSubmittedProposal(event: SubmittedProposal): void {
     proposal = new Proposal(daoProposalId);
 
     proposal.adapterOrExtensionId = inverseAdapter.value0;
-    // proposal.flags = event.params.flags;
     proposal.submittedBy = submittedBy;
     proposal.proposalId = proposalId;
     proposal.sponsored = false;
@@ -179,16 +175,19 @@ export function handleSubmittedProposal(event: SubmittedProposal): void {
 export function handleSponsoredProposal(event: SponsoredProposal): void {
   let id = event.params.proposalId;
   let daoAddress = event.address.toHex(); // dao contract address
-  let newProposalId = daoAddress.concat("-proposal-").concat(id.toHex());
+  let proposalId = daoAddress.concat("-proposal-").concat(id.toHex());
 
-  let proposal = Proposal.load(newProposalId);
+  let proposal = Proposal.load(proposalId);
   let sponsoredAt = event.block.timestamp.toString();
 
   log.info("=============== SponsoredProposal event fired. proposalId: {}", [
     event.params.proposalId.toHexString(),
   ]);
 
-  // proposal.flags = event.params.flags;
+  if (proposal == null) {
+    proposal = new Proposal(proposalId)
+  }
+
   proposal.sponsoredAt = sponsoredAt;
   proposal.sponsored = true;
   proposal.sponsoredBy = event.transaction.from;
@@ -198,26 +197,24 @@ export function handleSponsoredProposal(event: SponsoredProposal): void {
 }
 
 export function handleProcessedProposal(event: ProcessedProposal): void {
-  // let processedAt = event.block.timestamp.toString();
-  // let blockNumber = event.block.number;
+  let processedAt = event.block.timestamp.toString();
 
   log.info("=============== ProcessedProposal event fired. proposalId: {}", [
     event.params.proposalId.toHexString(),
   ]);
 
-  // let proposal = loadProposalAndSaveVoteResults(
-  //   event.address,
-  //   event.params.proposalId
-  // );
+  let proposal = loadProposalAndSaveVoteResults(
+    event.address,
+    event.params.proposalId
+  );
 
-  // if (proposal) {
-  //   // proposal.flags = event.params.flags;
-  //   proposal.processedAt = processedAt;
-  //   proposal.processed = true;
-  //   proposal.processedBy = event.transaction.from;
+  if (proposal) {
+    proposal.processed = true;
+    proposal.processedAt = processedAt;
+    proposal.processedBy = event.transaction.from;
 
-  //   proposal.save();
-  // }
+    proposal.save();
+  }
 }
 
 export function handleUpdateDelegateKey(event: UpdateDelegateKey): void {
@@ -236,9 +233,6 @@ export function handleUpdateDelegateKey(event: UpdateDelegateKey): void {
 
   if (member) {
     member.delegateKey = delegateKey;
-    // member.isDelegated =
-    //   event.params.memberAddress != event.params.newDelegateKey;
-
     member.save();
   }
 }
@@ -275,7 +269,7 @@ export function handleAdapterRemoved(event: AdapterRemoved): void {
     event.params.adapterId.toHexString(),
   ]);
 
-  if (adapter != null) {
+  if (adapter) {
     store.remove("Adapter", daoAdapterId);
   }
 }
@@ -307,13 +301,6 @@ export function handleExtensionAdded(event: ExtensionAdded): void {
   extension.extensionId = event.params.extensionId;
 
   extension.save();
-
-  // loadOrCreateExtensionEntity(
-  //   event.address,
-  //   event.params.extensionId,
-  //   event.params.extensionAddress,
-  //   event.transaction.from
-  // );
 }
 
 export function handleExtensionRemoved(event: ExtensionRemoved): void {
@@ -328,7 +315,7 @@ export function handleExtensionRemoved(event: ExtensionRemoved): void {
   ]);
   let extension = Extension.load(daoExtensionId);
 
-  if (extension != null) {
+  if (extension) {
     store.remove("Extension", daoExtensionId);
   }
 }
