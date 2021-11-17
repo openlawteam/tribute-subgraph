@@ -117,8 +117,6 @@ function loadProposalAndSaveVoteResults(
           proposal.isChallenged = voteResults.value7;
           proposal.stepRequested = voteResults.value8;
           proposal.forceFailed = voteResults.value9;
-          // @todo its a mapping, not generated in schema
-          // proposal.fallbackVotes = voteResults.value??;
           proposal.fallbackVotesCount = voteResults.value10;
 
           proposal.votingState = voteState.toString();
@@ -180,13 +178,6 @@ export function handleSubmittedProposal(event: SubmittedProposal): void {
 
     proposal.save();
   }
-
-  // getProposalDetails(
-  //   inverseAdapter.value0,
-  //   adapterAdddress,
-  //   daoAddress,
-  //   proposalId
-  // );
 }
 
 export function handleSponsoredProposal(event: SponsoredProposal): void {
