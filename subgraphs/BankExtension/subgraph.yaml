@@ -17,6 +17,7 @@ dataSources:
       language: wasm/assemblyscript
       entities:
         - Bank
+        - Member
         - Token
         - TokenHolder
         - TributeDao

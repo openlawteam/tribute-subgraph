@@ -17,9 +17,24 @@ import { OffchainVotingContract } from "./generated/DaoRegistry/OffchainVotingCo
 import { VotingContract } from "./generated/DaoRegistry/VotingContract";
 import { IVoting } from "./generated/DaoRegistry/IVoting";
 
-import { Adapter, Extension, Proposal, Member, Vote } from "./generated/schema";
+import { Adapter, Extension, Proposal, Member, TributeDao, Vote } from "./generated/schema";
 
-export function loadProposalAndSaveVoteResults(
+function loadAndSaveTributeDao(event: ExtensionAdded): void {
+  let tributeDao = TributeDao.load(event.address.toHex())
+
+  if (tributeDao == null) {
+    tributeDao = new TributeDao(event.address.toHex());
+
+    tributeDao.daoAddress = event.address;
+    tributeDao.creator = event.transaction.from
+    tributeDao.createdAt = event.block.timestamp;
+    tributeDao.name = ""; // @todo
+
+    tributeDao.save();
+  }
+}
+
+function loadProposalAndSaveVoteResults(
   daoAddress: Address,
   proposalId: Bytes
 ): Proposal | null {
@@ -303,6 +318,9 @@ export function handleExtensionAdded(event: ExtensionAdded): void {
   extension.extensionId = event.params.extensionId;
 
   extension.save();
+
+  // create a tributeDao entity, if it doesn't already exist
+  loadAndSaveTributeDao(event);
 }
 
 export function handleExtensionRemoved(event: ExtensionRemoved): void {

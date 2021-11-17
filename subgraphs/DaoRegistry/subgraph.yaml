@@ -20,6 +20,7 @@ dataSources:
         - Extension
         - Proposal
         - Member
+        - TributeDao
         - Vote
       abis:
         - name: DaoRegistry
