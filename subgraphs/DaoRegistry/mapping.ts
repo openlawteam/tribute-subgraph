@@ -4,7 +4,6 @@ import {
   ProcessedProposal,
   SponsoredProposal,
   SubmittedProposal,
-  UpdateDelegateKey,
   AdapterAdded,
   AdapterRemoved,
   ExtensionAdded,
@@ -17,16 +16,22 @@ import { OffchainVotingContract } from "./generated/DaoRegistry/OffchainVotingCo
 import { VotingContract } from "./generated/DaoRegistry/VotingContract";
 import { IVoting } from "./generated/DaoRegistry/IVoting";
 
-import { Adapter, Extension, Proposal, Member, TributeDao, Vote } from "./generated/schema";
+import {
+  Adapter,
+  Extension,
+  Proposal,
+  TributeDao,
+  Vote,
+} from "./generated/schema";
 
 function loadAndSaveTributeDao(event: ExtensionAdded): void {
-  let tributeDao = TributeDao.load(event.address.toHex())
+  let tributeDao = TributeDao.load(event.address.toHex());
 
   if (tributeDao == null) {
     tributeDao = new TributeDao(event.address.toHex());
 
     tributeDao.daoAddress = event.address;
-    tributeDao.creator = event.transaction.from
+    tributeDao.creator = event.transaction.from;
     tributeDao.createdAt = event.block.timestamp;
     tributeDao.name = ""; // @todo
 
@@ -174,7 +179,6 @@ export function handleSubmittedProposal(event: SubmittedProposal): void {
     proposal.proposalId = proposalId;
     proposal.sponsored = false;
     proposal.processed = false;
-    proposal.member = submittedBy.toHex();
 
     proposal.save();
   }
@@ -193,7 +197,7 @@ export function handleSponsoredProposal(event: SponsoredProposal): void {
   ]);
 
   if (proposal == null) {
-    proposal = new Proposal(proposalId)
+    proposal = new Proposal(proposalId);
   }
 
   proposal.sponsoredAt = sponsoredAt;
@@ -222,26 +226,6 @@ export function handleProcessedProposal(event: ProcessedProposal): void {
     proposal.processedBy = event.transaction.from;
 
     proposal.save();
-  }
-}
-
-export function handleUpdateDelegateKey(event: UpdateDelegateKey): void {
-  log.info(
-    "=============== UpdateDelegateKey event fired. memberAddress {}, newDelegateKey {}",
-    [
-      event.params.memberAddress.toHexString(),
-      event.params.newDelegateKey.toHexString(),
-    ]
-  );
-
-  let delegateKey = event.params.newDelegateKey;
-  let memberId = event.params.memberAddress.toHex();
-
-  let member = Member.load(memberId);
-
-  if (member) {
-    member.delegateKey = delegateKey;
-    member.save();
   }
 }
 

@@ -21,14 +21,6 @@ type TributeDao @entity {
   createdAt: BigInt!
 }
 
-type Member @entity {
-  "Unique identifier and primary key of the `Member` entity"
-  id: ID! # Set to `${member.id}`
-  delegateKey: Bytes
-  memberAddress: Bytes
-  proposals: [Proposal!] @derivedFrom(field: "member")
-}
-
 type Proposal @entity {
   "Unique identifier and primary key of the `Proposal` entity"
   id: ID! # Set to `${daoAddress}-proposal-${proposal.id}`
@@ -41,7 +33,6 @@ type Proposal @entity {
   processed: Boolean
   processedAt: String
   processedBy: Bytes
-  member: Member
 
   "Adapter ID of the proposal"
   adapterId: Bytes

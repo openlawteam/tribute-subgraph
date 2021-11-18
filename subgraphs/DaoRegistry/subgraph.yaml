@@ -19,7 +19,6 @@ dataSources:
         - Adapter
         - Extension
         - Proposal
-        - Member
         - TributeDao
         - Vote
       abis:
@@ -46,8 +45,6 @@ dataSources:
           handler: handleExtensionAdded
         - event: ExtensionRemoved(bytes32)
           handler: handleExtensionRemoved
-        - event: UpdateDelegateKey(address,address)
-          handler: handleUpdateDelegateKey
         - event: ConfigurationUpdated(bytes32,uint256)
           handler: handleConfigurationUpdated
         - event: AddressConfigurationUpdated(bytes32,address)
