@@ -8,7 +8,13 @@ import {
 import { DaoRegistry } from "./generated/BankExtension/DaoRegistry";
 import { ERC20Extension } from "./generated/BankExtension/ERC20Extension";
 
-import { Bank, Member, Token, TokenHolder, TributeDao } from "./generated/schema";
+import {
+  Bank,
+  Member,
+  Token,
+  TokenHolder,
+  TributeDao,
+} from "./generated/schema";
 
 // Reserved Internal Addresses
 let ESCROW: Address = Address.fromString(
@@ -71,8 +77,11 @@ function internalTransfer(
     internalERC20Balance(daoAddress, memberAddress);
 
     // create or update the member entity for the new balance
-    let memberId = daoAddress.toHex().concat('-member-').concat(memberAddress.toHex());
-    let member = Member.load(memberId)
+    let memberId = daoAddress
+      .toHex()
+      .concat("-member-")
+      .concat(memberAddress.toHex());
+    let member = Member.load(memberId);
 
     if (member == null) {
       member = new Member(memberId);
@@ -98,11 +107,11 @@ function internalTransfer(
   let bank = Bank.load(daoAddress.toHexString());
 
   if (bank == null) {
-    bank = new Bank(daoAddress.toHexString())
+    bank = new Bank(daoAddress.toHexString());
     bank.bankAddress = extensionAddress;
-  } 
+  }
 
-  // update the accounting for dao bank 
+  // update the accounting for dao bank
   bank.totalUnits = balanceOfTotalUnits.toString();
   bank.totalUnitsIssued = balanceOfTotalUnitsIssued.toString();
 
@@ -120,7 +129,7 @@ function internalERC20Balance(
   );
 
   if (erc20ExtensionAddress.reverted) {
-    log.info('try_getExtensionAddress reverted', []);
+    log.info("try_getExtensionAddress reverted", []);
   } else {
     let erc20ExtensionRegistry = ERC20Extension.bind(
       erc20ExtensionAddress.value
