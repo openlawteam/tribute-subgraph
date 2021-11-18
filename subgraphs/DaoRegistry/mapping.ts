@@ -33,7 +33,6 @@ function loadAndSaveTributeDao(event: ExtensionAdded): void {
     tributeDao.daoAddress = event.address;
     tributeDao.creator = event.transaction.from;
     tributeDao.createdAt = event.block.timestamp;
-    tributeDao.name = ""; // @todo
 
     tributeDao.save();
   }

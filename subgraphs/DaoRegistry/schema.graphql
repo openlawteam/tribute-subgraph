@@ -16,7 +16,6 @@ type TributeDao @entity {
   "Unique identifier and primary key of the `TributeDao` entity"
   id: ID! # Set to `${tributeDao.id}`
   daoAddress: Bytes!
-  name: String!
   creator: Bytes!
   createdAt: BigInt!
 }
