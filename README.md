@@ -32,16 +32,15 @@ In the `subgraph-deployer.ts` script, you will need to add the subgraph slug for
 const SUBGRAPH_SLUGS = {
   /**
    * CORE
-   * Mandatory core subgraphs
+   * Mandatory core subgraph (DaoFactory, DaoRegistry, BankExtension)
    */
-  DaoRegistry: "tribute-dao-registry-dev",
-  BankExtension: "tribute-dao-bank-extension-dev",
+  Core: "tribute-dao-core-dev",
 
   /**
    * ADAPTERS
    * Add your adpater subgraphs datasource and subgraph slug
    */
-  Onboarding: "tribute-dao-onboarding-dev",
+  CouponOnboarding: "tribute-dao-onboarding-dev",
   ...
 
   /**

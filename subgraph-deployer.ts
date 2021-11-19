@@ -16,10 +16,9 @@ enum NETWORKS {
 const SUBGRAPH_SLUGS = {
   /**
    * CORE
-   * Mandatory core subgraphs
+   * Mandatory core subgraph (DaoFactory, DaoRegistry, BankExtension)
    */
-  // DaoRegistry: "dao-registry-dev",
-  BankExtension: "bank-extension-dev",
+  Core: "core-dev",
 
   /**
    * ADAPTERS
