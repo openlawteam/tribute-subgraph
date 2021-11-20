@@ -1,10 +1,10 @@
-import { Address, Bytes } from "@graphprotocol/graph-ts";
+import {Address, Bytes} from '@graphprotocol/graph-ts';
 
-import { OffchainVotingContract } from "../../generated/templates/DaoRegistry/OffchainVotingContract";
-import { VotingContract } from "../../generated/templates/DaoRegistry/VotingContract";
-import { IVoting } from "../../generated/templates/DaoRegistry/IVoting";
+import {OffchainVotingContract} from '../../generated/templates/DaoRegistry/OffchainVotingContract';
+import {VotingContract} from '../../generated/templates/DaoRegistry/VotingContract';
+import {IVoting} from '../../generated/templates/DaoRegistry/IVoting';
 
-import { Proposal, Vote } from "../../generated/schema";
+import {Proposal, Vote} from '../../generated/schema';
 
 export function loadProposalAndSaveVoteResults(
   daoAddress: Address,
@@ -13,12 +13,12 @@ export function loadProposalAndSaveVoteResults(
   // load the existing proposal
   let maybeProposalId = daoAddress
     .toHex()
-    .concat("-proposal-")
+    .concat('-proposal-')
     .concat(proposalId.toHex());
   let proposal = Proposal.load(maybeProposalId);
 
   if (proposal) {
-    let voteId = daoAddress.toHex().concat("-vote-").concat(proposalId.toHex());
+    let voteId = daoAddress.toHex().concat('-vote-').concat(proposalId.toHex());
     let vote = new Vote(voteId);
 
     // get the voting adapter address from the proposal
@@ -30,7 +30,7 @@ export function loadProposalAndSaveVoteResults(
       );
       let votingAdapterName = votingIContract.getAdapterName();
 
-      if (votingAdapterName == "VotingContract") {
+      if (votingAdapterName == 'VotingContract') {
         let votingContract = VotingContract.bind(
           Address.fromString(votingAdapterAddress.toHex()) as Address
         );
@@ -55,7 +55,7 @@ export function loadProposalAndSaveVoteResults(
           proposal.votingState = voteState.toString();
           proposal.votingResult = voteId;
         }
-      } else if (votingAdapterName == "OffchainVotingContract") {
+      } else if (votingAdapterName == 'OffchainVotingContract') {
         let offchainVotingContract = OffchainVotingContract.bind(
           Address.fromString(votingAdapterAddress.toHex()) as Address
         );

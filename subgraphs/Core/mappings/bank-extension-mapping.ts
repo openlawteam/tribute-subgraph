@@ -1,18 +1,18 @@
-import { Address, BigInt, log } from "@graphprotocol/graph-ts";
+import {Address, BigInt, log} from '@graphprotocol/graph-ts';
 
 import {
   BankExtension,
   NewBalance,
   Withdraw,
-} from "../generated/templates/BankExtension/BankExtension";
-import { ERC20Extension } from "../generated/templates/BankExtension/ERC20Extension";
+} from '../generated/templates/BankExtension/BankExtension';
+import {ERC20Extension} from '../generated/templates/BankExtension/ERC20Extension';
 import {
   Member,
   TributeDao,
   Token,
   TokenHolder,
   Extension,
-} from "../generated/schema";
+} from '../generated/schema';
 import {
   ERC20_EXTENSION_ID,
   ESCROW,
@@ -20,7 +20,7 @@ import {
   MEMBER_COUNT,
   TOTAL,
   UNITS,
-} from "./dao-constants";
+} from './dao-constants';
 
 function internalTransfer(
   createdAt: string,
@@ -113,7 +113,7 @@ export function internalERC20Balance(
   // check and get ERC20 extension address
   let erc20ExtensionId = daoAddress
     .toHex()
-    .concat("-extension-")
+    .concat('-extension-')
     .concat(ERC20_EXTENSION_ID);
   let erc20Extension = Extension.load(erc20ExtensionId);
 
@@ -131,7 +131,7 @@ export function internalERC20Balance(
 
     let tokenId = daoAddress
       .toHex()
-      .concat("-token-")
+      .concat('-token-')
       .concat(erc20Extension.extensionAddress.toHex());
 
     let token = Token.load(tokenId);
@@ -151,7 +151,7 @@ export function internalERC20Balance(
     // update holder
     let tokenHolderId = daoAddress
       .toHex()
-      .concat("-tokenholder-")
+      .concat('-tokenholder-')
       .concat(memberAddress.toHex());
 
     let tokenHolder = TokenHolder.load(tokenHolderId);
@@ -171,7 +171,7 @@ export function internalERC20Balance(
 
 export function handleNewBalance(event: NewBalance): void {
   log.info(
-    "================ NewBalance event fired. member {}, tokenAddr {}, amount {}",
+    '================ NewBalance event fired. member {}, tokenAddr {}, amount {}',
     [
       event.params.member.toHexString(),
       event.params.tokenAddr.toHexString(),
@@ -189,7 +189,7 @@ export function handleNewBalance(event: NewBalance): void {
 
 export function handleWithdraw(event: Withdraw): void {
   log.info(
-    "================ Withdraw event fired. account {}, tokenAddr {}, amount {}",
+    '================ Withdraw event fired. account {}, tokenAddr {}, amount {}',
     [
       event.params.account.toHexString(),
       event.params.tokenAddr.toHexString(),
@@ -198,7 +198,7 @@ export function handleWithdraw(event: Withdraw): void {
   );
 
   internalTransfer(
-    "",
+    '',
     event.address,
     event.params.account,
     event.params.tokenAddr

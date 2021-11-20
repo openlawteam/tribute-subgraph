@@ -1,12 +1,12 @@
-import { Address, BigInt, log } from "@graphprotocol/graph-ts";
+import {Address, BigInt, log} from '@graphprotocol/graph-ts';
 
 import {
   NFTExtension,
   CollectedNFT,
   WithdrawnNFT,
   TransferredNFT,
-} from "./generated/NFTExtension/NFTExtension";
-import { NFT, NFTCollection } from "./generated/schema";
+} from './generated/NFTExtension/NFTExtension';
+import {NFT, NFTCollection} from './generated/schema';
 
 function loadOrCreateNFT(
   extensionAddress: Address,
@@ -19,9 +19,9 @@ function loadOrCreateNFT(
 
   let nftId = daoAddress
     .toHex()
-    .concat("-nft-")
+    .concat('-nft-')
     .concat(nftAddress.toHex())
-    .concat("-")
+    .concat('-')
     .concat(nftTokenId.toString());
 
   let nft = NFT.load(nftId);
@@ -35,7 +35,7 @@ function loadOrCreateNFT(
 
 export function handleCollectedNFT(event: CollectedNFT): void {
   log.info(
-    "================ CollectedNFT event fired. nftAddr: {}, nftTokenId: {}",
+    '================ CollectedNFT event fired. nftAddr: {}, nftTokenId: {}',
     [event.params.nftAddr.toHexString(), event.params.nftTokenId.toString()]
   );
 
@@ -56,7 +56,7 @@ export function handleCollectedNFT(event: CollectedNFT): void {
   // add to the DAO's NFT collection
   let nftCollectionId = daoAddress
     .toHex()
-    .concat("-nftcollection-")
+    .concat('-nftcollection-')
     .concat(event.address.toHex());
 
   let nftCollection = NFTCollection.load(nftCollectionId);
@@ -71,7 +71,7 @@ export function handleCollectedNFT(event: CollectedNFT): void {
 
 export function handleWithdrawnNFT(event: WithdrawnNFT): void {
   log.info(
-    "================ WithdrawnNFT event fired. toAddress: {}, nftAddr: {}, nftTokenId: {}",
+    '================ WithdrawnNFT event fired. toAddress: {}, nftAddr: {}, nftTokenId: {}',
     [
       event.params.toAddress.toHexString(),
       event.params.nftAddr.toHexString(),
@@ -94,7 +94,7 @@ export function handleWithdrawnNFT(event: WithdrawnNFT): void {
 
 export function handleTransferredNFT(event: TransferredNFT): void {
   log.info(
-    "================ TransferredNFT event fired. nftAddr: {}, nftTokenId: {}, newOwner: {}, oldOwner: {}",
+    '================ TransferredNFT event fired. nftAddr: {}, nftTokenId: {}, newOwner: {}, oldOwner: {}',
     [
       event.params.nftAddr.toHexString(),
       event.params.nftTokenId.toString(),

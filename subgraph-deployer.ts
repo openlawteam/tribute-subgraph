@@ -1,16 +1,16 @@
-import path, { resolve } from "path";
-import { execSync } from "child_process";
-import { config as dotenvConfig } from "dotenv";
+import path, {resolve} from 'path';
+import {execSync} from 'child_process';
+import {config as dotenvConfig} from 'dotenv';
 
-dotenvConfig({ path: resolve(__dirname, ".env") });
+dotenvConfig({path: resolve(__dirname, '.env')});
 
 const GITHUB_USERNAME = process.env.GITHUB_USERNAME;
 const NETWORK = process.env.NETWORK;
 
 enum NETWORKS {
-  GANACHE = "ganache",
-  RINKEBY = "rinkeby",
-  MAINNET = "mainnet",
+  GANACHE = 'ganache',
+  RINKEBY = 'rinkeby',
+  MAINNET = 'mainnet',
 }
 
 const SUBGRAPH_SLUGS = {
@@ -18,7 +18,7 @@ const SUBGRAPH_SLUGS = {
    * CORE
    * Mandatory core subgraph (DaoFactory, DaoRegistry, BankExtension)
    */
-  Core: "core-dev",
+  Core: 'core-dev',
 
   /**
    * ADAPTERS
@@ -37,7 +37,7 @@ const SUBGRAPH_SLUGS = {
 const srcDir = path.join(__dirname);
 export const exec = (cmd: string, cwdDir?: string) => {
   try {
-    return execSync(cmd, { cwd: cwdDir ?? srcDir, stdio: "inherit" });
+    return execSync(cmd, {cwd: cwdDir ?? srcDir, stdio: 'inherit'});
   } catch (e) {
     throw new Error(`Failed to run command \`${cmd}\``);
   }
@@ -47,15 +47,15 @@ let executedDeployments: number = 0;
 
 (function () {
   if (!NETWORK) {
-    throw new Error("Please set a NETWORK in a .env file");
+    throw new Error('Please set a NETWORK in a .env file');
   }
 
   if (!GITHUB_USERNAME && NETWORK !== NETWORKS.MAINNET) {
-    throw new Error("Please set your GITHUB_USERNAME in a .env file");
+    throw new Error('Please set your GITHUB_USERNAME in a .env file');
   }
 
   // Compile the solidity contracts
-  console.log("⛓  ### Compiling the smart contracts...");
+  console.log('⛓  ### Compiling the smart contracts...');
   exec(`npm run compile`);
 
   Object.entries(SUBGRAPH_SLUGS).forEach(
@@ -70,7 +70,7 @@ let executedDeployments: number = 0;
         // Define the subgraph dataSource path
         const datasourcePath = `${resolve(
           __dirname,
-          "subgraphs",
+          'subgraphs',
           datasourceName
         )}`;
 
@@ -89,7 +89,7 @@ let executedDeployments: number = 0;
           taskDeployToLocal(datasourcePath, subgraphSlug);
         }
 
-        console.log("🦾 ### Done.");
+        console.log('🦾 ### Done.');
 
         // Increment deployment counter
         executedDeployments++;
@@ -101,7 +101,7 @@ let executedDeployments: number = 0;
 
   console.log(
     `${
-      executedDeployments === 0 ? "😵" : "🎉"
+      executedDeployments === 0 ? '😵' : '🎉'
     } ### ${executedDeployments} Deployment(s) Successful!`
   );
 })();
@@ -115,7 +115,7 @@ let executedDeployments: number = 0;
  */
 function taskGraphCodegen(datasourceName: string, datasourcePath: string) {
   // Create the graph code generation files
-  console.log("📦 ### 1/2 Creating the graph scheme for...", datasourceName);
+  console.log('📦 ### 1/2 Creating the graph scheme for...', datasourceName);
   exec(`graph codegen`, datasourcePath);
 }
 
@@ -128,7 +128,7 @@ function taskGraphCodegen(datasourceName: string, datasourcePath: string) {
  */
 function taskGraphBuild(datasourceName: string, datasourcePath: string) {
   // Building the graph scheme
-  console.log("📦 ### 2/2 Building the graph scheme for...", datasourceName);
+  console.log('📦 ### 2/2 Building the graph scheme for...', datasourceName);
   exec(`graph build`, datasourcePath);
 }
 
@@ -153,7 +153,7 @@ function taskDeployToNetwork(
   );
 
   // Deploy subgraph <SUBGRAPH_SLUG>
-  console.log("🏎  ### Deploying subgraph...");
+  console.log('🏎  ### Deploying subgraph...');
 
   exec(
     `graph auth --studio ${process.env.GRAPH_DEPLOYMENT_KEY}`,

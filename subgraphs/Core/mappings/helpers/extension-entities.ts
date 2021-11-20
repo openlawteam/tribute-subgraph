@@ -1,10 +1,10 @@
-import { Address, Bytes, log } from "@graphprotocol/graph-ts";
+import {Address, Bytes, log} from '@graphprotocol/graph-ts';
 
-import { BankExtension as BankExtensionTemplate } from "../../generated/templates";
-import { Bank } from "../../generated/schema";
+import {BankExtension as BankExtensionTemplate} from '../../generated/templates';
+import {Bank} from '../../generated/schema';
 
-import { internalERC20Balance } from "../bank-extension-mapping";
-import { BANK_EXTENSION_ID, ERC20_EXTENSION_ID } from "../dao-constants";
+import {internalERC20Balance} from '../bank-extension-mapping';
+import {BANK_EXTENSION_ID, ERC20_EXTENSION_ID} from '../dao-constants';
 
 export function loadOrCreateExtensionEntity(
   daoAddress: Address,
@@ -13,7 +13,7 @@ export function loadOrCreateExtensionEntity(
   transactionFrom: Address
 ): void {
   if (BANK_EXTENSION_ID.toString() == extensionId.toHexString()) {
-    log.info("INFO BANK_EXTENSION_ID, extensionId: {}", [
+    log.info('INFO BANK_EXTENSION_ID, extensionId: {}', [
       extensionId.toHexString(),
     ]);
 
@@ -21,7 +21,7 @@ export function loadOrCreateExtensionEntity(
 
     bank(daoAddress, extensionAddress);
   } else if (ERC20_EXTENSION_ID.toString() == extensionId.toHexString()) {
-    log.info("INFO ERC20_EXTENSION_ID, extensionId: {}", [
+    log.info('INFO ERC20_EXTENSION_ID, extensionId: {}', [
       extensionId.toHexString(),
     ]);
 
@@ -33,7 +33,7 @@ export function loadOrCreateExtensionEntity(
 function bank(daoAddress: Address, extensionAddress: Address): void {
   let bankId = daoAddress
     .toHex()
-    .concat("-bank-")
+    .concat('-bank-')
     .concat(extensionAddress.toHex());
   let bank = Bank.load(bankId);
 

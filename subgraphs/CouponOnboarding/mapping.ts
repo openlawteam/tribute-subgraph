@@ -1,7 +1,7 @@
-import { Address, BigInt, log } from "@graphprotocol/graph-ts";
+import {Address, BigInt, log} from '@graphprotocol/graph-ts';
 
-import { CouponRedeemed } from "./generated/CouponOnboarding/CouponOnboarding";
-import { Coupon } from "./generated/schema";
+import {CouponRedeemed} from './generated/CouponOnboarding/CouponOnboarding';
+import {Coupon} from './generated/schema';
 
 function loadOrCreateCoupon(
   daoAddress: Address,
@@ -11,9 +11,9 @@ function loadOrCreateCoupon(
   // Set to `${daoAddress}-coupon-${nonce}-${authorizedMember}`
   let couponId = daoAddress
     .toHex()
-    .concat("-coupon-")
+    .concat('-coupon-')
     .concat(nonce.toString())
-    .concat("-")
+    .concat('-')
     .concat(authorizedMember.toHex());
 
   let coupon = Coupon.load(couponId);
@@ -27,7 +27,7 @@ function loadOrCreateCoupon(
 
 export function handleCouponRedeemed(event: CouponRedeemed): void {
   log.info(
-    "================ CouponRedeemed event fired. daoAddress: {}, authorizedMember: {}, amount: {}, nonce: {}",
+    '================ CouponRedeemed event fired. daoAddress: {}, authorizedMember: {}, amount: {}, nonce: {}',
     [
       event.params.daoAddress.toHexString(),
       event.params.authorizedMember.toHexString(),
