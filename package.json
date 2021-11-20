@@ -68,12 +68,12 @@
     "overrides": [
       {
         "files": [
-          "src/**/*.{js,ts}"
+          "*.{js,ts}"
         ],
         "options": {
           "singleQuote": true,
           "bracketSpacing": false,
-          "jsxBracketSameLine": true,
+          "bracketSameLine": true,
           "tabWidth": 2
         }
       }
