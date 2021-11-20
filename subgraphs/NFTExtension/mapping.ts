@@ -13,7 +13,7 @@ function loadOrCreateNFT(
   nftAddress: Address,
   nftTokenId: BigInt
 ): NFT {
-  // get nft extension bindings
+  // get NFTExtension bindings
   let registry = NFTExtension.bind(extensionAddress);
   let daoAddress = registry.dao();
 
@@ -53,7 +53,7 @@ export function handleCollectedNFT(event: CollectedNFT): void {
   let nftRegistry = NFTExtension.bind(event.address);
   let daoAddress = nftRegistry.dao();
 
-  // add to the daos nft collection
+  // add to the DAO's NFT collection
   let nftCollectionId = daoAddress
     .toHex()
     .concat("-nftcollection-")
