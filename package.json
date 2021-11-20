@@ -1,10 +1,18 @@
 {
   "name": "tribute-subgraph",
   "version": "0.0.2",
-  "description": "",
-  "directories": {
-    "test": "test"
+  "private": true,
+  "description": "Tribute DAO Framework Subgraph",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/openlawteam/tribute-subgraph.git"
   },
+  "author": "Tribute Labs",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/openlawteam/tribute-subgraph/issues"
+  },
+  "homepage": "https://github.com/openlawteam/tribute-subgraph#readme",
   "dependencies": {
     "@openzeppelin/contracts": "^4.0.0-beta.0",
     "@truffle/hdwallet-provider": "1.2.2",
@@ -50,16 +58,6 @@
     "style:fix": "prettier --write 'subgraphs' 'subgraph-deployer.ts'",
     "style": "prettier --check 'subgraphs' 'subgraph-deployer.ts'"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/openlawteam/tribute-subgraph.git"
-  },
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/openlawteam/tribute-subgraph/issues"
-  },
-  "homepage": "https://github.com/openlawteam/tribute-subgraph#readme",
   "np": {
     "branch": "main",
     "yolo": true,
