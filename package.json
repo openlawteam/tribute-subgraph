@@ -47,8 +47,8 @@
     "compile": "rimraf build && mkdir -p build/contracts && cp -r node_modules/tribute-contracts/contracts/** build/contracts && hardhat compile",
     "release": "np",
     "deploy-subgraph": "ts-node subgraph-deployer.ts",
-    "style:fix": "prettier --write 'subgraphs'",
-    "style": "prettier --check 'subgraphs'"
+    "style:fix": "prettier --write 'subgraphs' 'subgraph-deployer.ts'",
+    "style": "prettier --check 'subgraphs' 'subgraph-deployer.ts'"
   },
   "repository": {
     "type": "git",
