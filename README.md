@@ -86,6 +86,8 @@ Then, simply run the following command to deploy the subgraphs:
 npm run deploy-subgraph
 ```
 
+_IMPORTANT_: If deploying to `mainnet` the command line will prompt for an input for the `✔ Version Label (e.g. v0.0.1)` for each subgraph. Enter the version and the deployment will resume.
+
 ## Local Development Graph Setup
 
 Check out the setup and development guide [here](https://github.com/openlawteam/tribute-subgraph/blob/main/docker/README.md)

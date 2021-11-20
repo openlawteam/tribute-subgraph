@@ -68,3 +68,5 @@ NETWORK=ganache
 ```
 
 Then, run the subgraph deployer `npm run deploy-subgraph` to allocate the subgraph names in the Graph Node and deploy the subgraphs to your local Graph Node.
+
+_IMPORTANT_: The command line will prompt for an input for the `✔ Version Label (e.g. v0.0.1)` for each subgraph. Enter the version and the deployment will resume.
