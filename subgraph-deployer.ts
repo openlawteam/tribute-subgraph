@@ -45,7 +45,7 @@ export const exec = (cmd: string, cwdDir?: string) => {
 
 let executedDeployments: number = 0;
 
-(function() {
+(function () {
   if (!NETWORK) {
     throw new Error("Please set a NETWORK in a .env file");
   }
