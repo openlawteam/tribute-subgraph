@@ -18,10 +18,7 @@ export function loadProposalAndSaveVoteResults(
   let proposal = Proposal.load(maybeProposalId);
 
   if (proposal) {
-    let voteId = daoAddress
-      .toHex()
-      .concat("-vote-")
-      .concat(proposalId.toHex());
+    let voteId = daoAddress.toHex().concat("-vote-").concat(proposalId.toHex());
     let vote = new Vote(voteId);
 
     // get the voting adapter address from the proposal

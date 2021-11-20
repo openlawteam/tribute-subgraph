@@ -93,9 +93,8 @@ function internalTransfer(
   // get balance of units owned by the guild bank
   let balanceOfGuildUnits = bankRegistry.balanceOf(GUILD, UNITS);
   // get total units issued and outstanding in the DAO (not owned by guild bank)
-  let balanceOfTotalUnitsIssued = balanceOfTotalUnits.minus(
-    balanceOfGuildUnits
-  );
+  let balanceOfTotalUnitsIssued =
+    balanceOfTotalUnits.minus(balanceOfGuildUnits);
 
   let dao = TributeDao.load(daoAddress.toHexString());
 
