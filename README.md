@@ -95,3 +95,7 @@ Check out the setup and development guide [here](https://github.com/openlawteam/
 ## Subgraph Tests
 
 TODO
+
+## Release Tags
+
+For releases, simply run `npm run release` and follow the interactive UI in your console. The release script runs [np](https://github.com/sindresorhus/np). We have initially configured `np` (in `package.json`) to automatically handle only versioning, release drafts, and git tagging. We can enable additional features as needed, such as publishing to npm.
