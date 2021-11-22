@@ -38,9 +38,9 @@ Start ganache with `ganache-cli --host 0.0.0.0 --port 7545 --networkId 1337 --ch
 
 Using your Tribute DAO contracts deployed from [tribute-contracts](https://github.com/openlawteam/tribute-contracts) to your running ganache network, copy the `DaoFactory` contract address and block number into the respective `address` and `startBlock` (important: make sure the block number starts from 1 previous block, for example, if the block number is `19`, use `18` as the `startBlock`) for the `DaoFactory` source in `subgraphs/Core/subgraph.yaml`.
 
-If you are deploying other optional subgraphs (e.g., `CouponOnboarding`, `NFTExtension`), you will also need to enter the contract address and block number of the subject contract into the respective `subgraphs/[SLUG]/subgraph.yaml` file.
+If you are deploying other optional subgraphs (e.g., `CouponOnboarding`, `NFTExtension`), you will also need to enter the contract address and block number of the subject contract into the respective `subgraphs/[SUBGRAPH CONTRACT DIRNAME]/subgraph.yaml` file.
 
-The `network` in the `subgraphs/[SLUG]/subgraph.yaml` files should be set to `mainnet`.
+The `network` in the `subgraphs/[SUBGRAPH CONTRACT DIRNAME]/subgraph.yaml` files should be set to `mainnet`.
 
 In a new terminal window, `cd docker/` and `docker-compose up`.
 
