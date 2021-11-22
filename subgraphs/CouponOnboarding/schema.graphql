@@ -1,0 +1,12 @@
+type Coupon @entity {
+  "Unique identifier and primary key of the `Coupon` entity"
+  id: ID! # Set to `${daoAddress}-coupon-${nonce}-${authorizedMember}`
+  "Redemption date timestamp"
+  redeemedAt: String!
+  "Authorized member address"
+  authorizedMember: Bytes!
+  "Redemption amount"
+  amount: BigInt!
+  "Redemption nonce"
+  nonce: BigInt!
+}

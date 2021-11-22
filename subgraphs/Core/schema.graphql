@@ -22,7 +22,10 @@ type TributeDao @entity {
   "The DAO creator address"
   creator: Bytes
   createdAt: String
+  "Total units minted for the DAO"
   totalUnits: String
+  "Total units issued and outstanding"
+  totalUnitsIssued: String
   "The bank of the DAO"
   bank: Bank! @derivedFrom(field: "tributeDao")
   "List of registered adapters"
@@ -33,10 +36,6 @@ type TributeDao @entity {
   members: [Member]! @derivedFrom(field: "tributeDaos")
   "List of proposals in the DAO"
   proposals: [Proposal]! @derivedFrom(field: "tributeDao")
-  "List of nfts in the DAO"
-  nftCollection: NFTCollection! @derivedFrom(field: "tributeDao")
-  "List of redeemed coupons"
-  coupons: [Coupon]! @derivedFrom(field: "tributeDao")
 }
 
 type Member @entity {
@@ -76,52 +75,6 @@ type Proposal @entity {
   "Voting adapter address"
   votingAdapter: Bytes
 
-  # ONBOARDING; proposal details
-  unitsToMint: Bytes
-  amount: BigInt
-  unitsRequested: BigInt
-  token: Bytes
-  applicant: Bytes
-
-  # DISTRIBUTE; proposal details
-  "The unit holder address that will receive the funds. If 0x0, the funds will be distributed to all members of the DAO"
-  unitHolderAddr: Bytes
-  "The distribution status or the kick status"
-  status: String
-  "Current iteration index to control the cached for-loop"
-  currentIndex: BigInt
-  "The block number in which the proposal/or vote results has been created"
-  blockNumber: BigInt
-
-  # TRIBUTE; proposal details
-  "The address of the DAO internal token to be minted to the applicant."
-  tokenToMint: Bytes
-  "The amount requested of DAO internal tokens"
-  requestAmount: BigInt
-  "The amount of tribute tokens."
-  tributeAmount: BigInt
-  "The owner of the ERC-20 tokens being provided as tribute."
-  tributeTokenOwner: Bytes
-
-  # TRIBUTE NFT; propoal details
-  "The address of the ERC-721 token that will be transferred to the DAO in exchange for DAO internal tokens."
-  nftAddr: Bytes
-  "The nft token identifier."
-  nftTokenId: BigInt
-
-  # GUILDKICK; proposal details
-  "The address of the member to kick out of the DAO."
-  memberToKick: Bytes
-
-  # FINANCING; proposal details
-  "Additional details for the financing proposal"
-  details: Bytes
-
-  # MANAGING; proposal details
-  "Additional details for the managing proposal"
-  keys: [Bytes!]
-  values: [BigInt!]
-
   # OFFCHAIN VOTES: additional info
   snapshot: BigInt
   proposalHash: Bytes
@@ -134,11 +87,11 @@ type Proposal @entity {
   gracePeriodStartingTime: BigInt
   isChallenged: Boolean
   stepRequested: BigInt
-  # fallbackVotes: BigInt
   forceFailed: Boolean
   fallbackVotesCount: BigInt
 
   # ONCHAIN VOTES: additional info
+  blockNumber: BigInt
   votes: BigInt
 
   votingState: String
@@ -148,8 +101,8 @@ type Proposal @entity {
 type Vote @entity {
   "Unique identifier and primary key of the `Vote` entity"
   id: ID! # Set to `${tribute.id}-vote-${proposal.id}`
-  nbNo: BigInt
-  nbYes: BigInt
+  nbNo: BigInt!
+  nbYes: BigInt!
   adapterName: VotingAdapterName!
   adapterAddress: Bytes!
   proposal: Proposal
@@ -180,23 +133,6 @@ type TokenHolder @entity {
   token: Token #`${tribute.id}-token-${token.id}`
 }
 
-type NFT @entity {
-  "Unique identifier and primary key of the `NFT` entity"
-  id: ID! # Set to `${tribute.id}-nft-${nftAddress.id}-$tokenId}`
-  nftAddress: Bytes!
-  tokenId: BigInt!
-  from: Bytes
-  to: Bytes
-  nftCollection: NFTCollection
-}
-
-type NFTCollection @entity {
-  "Unique identifier and primary key of the `NFTCollection` entity"
-  id: ID! # Set to `${tribute.id}-nftcollection-${extensionAddress}`
-  nfts: [NFT!] @derivedFrom(field: "nftCollection")
-  tributeDao: TributeDao!
-}
-
 type Adapter @entity {
   "Unique identifier and primary key of the `Adapter` entity"
   id: ID! # Set to `${tribute.id}-adapter-${adapter.id}`
@@ -214,16 +150,5 @@ type Extension @entity {
   extensionAddress: Bytes!
   "Extension ID"
   extensionId: Bytes!
-  tributeDao: TributeDao
-}
-
-type Coupon @entity {
-  "Unique identifier and primary key of the `Coupon` entity"
-  id: ID! # Set to `${tribute.id}-coupon-${nonce}-${authorizedMember}`
-  redeemedAt: String!
-  "Authorized member address"
-  authorizedMember: Bytes!
-  amount: BigInt!
-  nonce: BigInt!
   tributeDao: TributeDao
 }

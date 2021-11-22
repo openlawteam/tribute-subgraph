@@ -1,4 +1,4 @@
-import { log, store } from "@graphprotocol/graph-ts";
+import {log, store} from '@graphprotocol/graph-ts';
 
 import {
   ProcessedProposal,
@@ -12,12 +12,11 @@ import {
   ConfigurationUpdated,
   AddressConfigurationUpdated,
   DaoRegistry,
-} from "../../generated/templates/DaoRegistry/DaoRegistry";
-import { Adapter, Extension, Proposal, Member } from "../../generated/schema";
+} from '../generated/templates/DaoRegistry/DaoRegistry';
+import {Adapter, Extension, Proposal, Member} from '../generated/schema';
 
-import { getProposalDetails } from "../helpers/proposal-details";
-import { loadOrCreateExtensionEntity } from "../helpers/extension-entities";
-import { loadProposalAndSaveVoteResults } from "../helpers/vote-results";
+import {loadOrCreateExtensionEntity} from './helpers/extension-entities';
+import {loadProposalAndSaveVoteResults} from './helpers/vote-results';
 
 export function handleSubmittedProposal(event: SubmittedProposal): void {
   let submittedBy = event.transaction.from;
@@ -25,20 +24,20 @@ export function handleSubmittedProposal(event: SubmittedProposal): void {
   let daoAddress = event.address;
   let daoProposalId = daoAddress
     .toHex()
-    .concat("-proposal-")
+    .concat('-proposal-')
     .concat(proposalId.toHex());
 
   let proposal = Proposal.load(daoProposalId);
 
   log.info(
-    "=============== SubmittedProposal event fired. daoAddress: {}, proposalId: {}",
+    '=============== SubmittedProposal event fired. daoAddress: {}, proposalId: {}',
     [event.address.toHexString(), event.params.proposalId.toHexString()]
   );
 
   let daoRegistry = DaoRegistry.bind(event.address);
   let data = daoRegistry.proposals(event.params.proposalId);
 
-  log.info("INFO proposals , {}, {}", [
+  log.info('INFO proposals , {}, {}', [
     data.value0.toHexString(), // `adapterAddress`
     data.value1.toString(), // `flags`
   ]);
@@ -47,7 +46,7 @@ export function handleSubmittedProposal(event: SubmittedProposal): void {
 
   let inverseAdapter = daoRegistry.inverseAdapters(adapterAdddress);
 
-  log.info("INFO inverseAdapter , {}, {}", [
+  log.info('INFO inverseAdapter , {}, {}', [
     inverseAdapter.value0.toHexString(), // adapterId
     inverseAdapter.value1.toString(), // acl
   ]);
@@ -56,6 +55,7 @@ export function handleSubmittedProposal(event: SubmittedProposal): void {
     proposal = new Proposal(daoProposalId);
 
     proposal.adapterId = inverseAdapter.value0;
+    proposal.adapterAddress = adapterAdddress;
     proposal.flags = event.params.flags;
     proposal.submittedBy = submittedBy;
     proposal.proposalId = proposalId;
@@ -66,26 +66,23 @@ export function handleSubmittedProposal(event: SubmittedProposal): void {
 
     proposal.save();
   }
-
-  getProposalDetails(
-    inverseAdapter.value0,
-    adapterAdddress,
-    daoAddress,
-    proposalId
-  );
 }
 
 export function handleSponsoredProposal(event: SponsoredProposal): void {
   let id = event.params.proposalId;
-  let daoAddress = event.address.toHex(); // dao contract address
-  let newProposalId = daoAddress.concat("-proposal-").concat(id.toHex());
+  let daoAddress = event.address.toHex(); // DAO contract address
+  let proposalId = daoAddress.concat('-proposal-').concat(id.toHex());
 
-  let proposal = Proposal.load(newProposalId);
+  let proposal = Proposal.load(proposalId);
   let sponsoredAt = event.block.timestamp.toString();
 
-  log.info("=============== SponsoredProposal event fired. proposalId: {}", [
+  log.info('=============== SponsoredProposal event fired. proposalId: {}', [
     event.params.proposalId.toHexString(),
   ]);
+
+  if (proposal == null) {
+    proposal = new Proposal(proposalId);
+  }
 
   proposal.flags = event.params.flags;
   proposal.sponsoredAt = sponsoredAt;
@@ -98,16 +95,14 @@ export function handleSponsoredProposal(event: SponsoredProposal): void {
 
 export function handleProcessedProposal(event: ProcessedProposal): void {
   let processedAt = event.block.timestamp.toString();
-  let blockNumber = event.block.number;
 
-  log.info("=============== ProcessedProposal event fired. proposalId: {}", [
+  log.info('=============== ProcessedProposal event fired. proposalId: {}', [
     event.params.proposalId.toHexString(),
   ]);
 
   let proposal = loadProposalAndSaveVoteResults(
     event.address,
-    event.params.proposalId,
-    blockNumber
+    event.params.proposalId
   );
 
   if (proposal) {
@@ -122,7 +117,7 @@ export function handleProcessedProposal(event: ProcessedProposal): void {
 
 export function handleUpdateDelegateKey(event: UpdateDelegateKey): void {
   log.info(
-    "=============== UpdateDelegateKey event fired. memberAddress {}, newDelegateKey {}",
+    '=============== UpdateDelegateKey event fired. memberAddress {}, newDelegateKey {}',
     [
       event.params.memberAddress.toHexString(),
       event.params.newDelegateKey.toHexString(),
@@ -146,11 +141,11 @@ export function handleUpdateDelegateKey(event: UpdateDelegateKey): void {
 export function handleAdapterAdded(event: AdapterAdded): void {
   let daoAddress = event.address.toHexString();
   let adapterId = event.params.adapterId;
-  let daoAdapterId = daoAddress.concat("-adapter-").concat(adapterId.toHex());
+  let daoAdapterId = daoAddress.concat('-adapter-').concat(adapterId.toHex());
 
   let adapter = Adapter.load(daoAdapterId);
 
-  log.info("=============== AdapterAdded event fired. adapterId: {}", [
+  log.info('=============== AdapterAdded event fired. adapterId: {}', [
     event.params.adapterId.toHexString(),
   ]);
 
@@ -170,16 +165,16 @@ export function handleAdapterAdded(event: AdapterAdded): void {
 export function handleAdapterRemoved(event: AdapterRemoved): void {
   let daoAddress = event.address.toHexString();
   let adapterId = event.params.adapterId;
-  let daoAdapterId = daoAddress.concat("-adapter-").concat(adapterId.toHex());
+  let daoAdapterId = daoAddress.concat('-adapter-').concat(adapterId.toHex());
 
   let adapter = Adapter.load(daoAdapterId);
 
-  log.info("=============== AdapterRemoved event fired. adapterId: {}", [
+  log.info('=============== AdapterRemoved event fired. adapterId: {}', [
     event.params.adapterId.toHexString(),
   ]);
 
   if (adapter != null) {
-    store.remove("Adapter", daoAdapterId);
+    store.remove('Adapter', daoAdapterId);
   }
 }
 
@@ -188,11 +183,11 @@ export function handleExtensionAdded(event: ExtensionAdded): void {
   let extensionId = event.params.extensionId;
 
   let daoExtensionId = daoAddress
-    .concat("-extension-")
+    .concat('-extension-')
     .concat(extensionId.toHex());
 
   log.info(
-    "=============== ExtensionAdded event fired. extensionAddress {}, extensionId {}, daoAddress {}",
+    '=============== ExtensionAdded event fired. extensionAddress {}, extensionId {}, daoAddress {}',
     [
       event.params.extensionAddress.toHexString(),
       event.params.extensionId.toHexString(),
@@ -225,22 +220,22 @@ export function handleExtensionRemoved(event: ExtensionRemoved): void {
   let daoAddress = event.address.toHexString();
   let extensionId = event.params.extensionId;
   let daoExtensionId = daoAddress
-    .concat("-extension-")
+    .concat('-extension-')
     .concat(extensionId.toHex());
 
-  log.info("=============== ExtensionRemoved event fired. extensionId {}", [
+  log.info('=============== ExtensionRemoved event fired. extensionId {}', [
     event.params.extensionId.toHexString(),
   ]);
   let extension = Extension.load(daoExtensionId);
 
   if (extension != null) {
-    store.remove("Extension", daoExtensionId);
+    store.remove('Extension', daoExtensionId);
   }
 }
 
 export function handleConfigurationUpdated(event: ConfigurationUpdated): void {
   log.info(
-    "=============== ConfigurationUpdated event fired. key {}, value {}",
+    '=============== ConfigurationUpdated event fired. key {}, value {}',
     [event.params.key.toHexString(), event.params.value.toHexString()]
   );
 }
@@ -249,7 +244,7 @@ export function handleAddressConfigurationUpdated(
   event: AddressConfigurationUpdated
 ): void {
   log.info(
-    "=============== AddressConfigurationUpdated event fired. key {}, value {}",
+    '=============== AddressConfigurationUpdated event fired. key {}, value {}',
     [event.params.key.toHexString(), event.params.value.toHexString()]
   );
 }

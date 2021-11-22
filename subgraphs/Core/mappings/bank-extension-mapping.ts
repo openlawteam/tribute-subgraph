@@ -1,25 +1,26 @@
-import { Address, BigInt, log } from "@graphprotocol/graph-ts";
+import {Address, BigInt, log} from '@graphprotocol/graph-ts';
 
 import {
   BankExtension,
   NewBalance,
   Withdraw,
-} from "../../generated/templates/BankExtension/BankExtension";
-import { ERC20Extension } from "../../generated/templates/BankExtension/ERC20Extension";
+} from '../generated/templates/BankExtension/BankExtension';
+import {ERC20Extension} from '../generated/templates/BankExtension/ERC20Extension';
 import {
   Member,
   TributeDao,
   Token,
   TokenHolder,
   Extension,
-} from "../../generated/schema";
+} from '../generated/schema';
 import {
-  GUILD,
-  UNITS,
-  TOTAL,
-  MEMBER_COUNT,
   ERC20_EXTENSION_ID,
-} from "../core/dao-constants";
+  ESCROW,
+  GUILD,
+  MEMBER_COUNT,
+  TOTAL,
+  UNITS,
+} from './dao-constants';
 
 function internalTransfer(
   createdAt: string,
@@ -38,9 +39,11 @@ function internalTransfer(
     TOTAL.toHex() != memberAddress.toHex() &&
     GUILD.toHex() != memberAddress.toHex() &&
     MEMBER_COUNT.toHex() != memberAddress.toHex() &&
+    ESCROW.toHex() != memberAddress.toHex() &&
     TOTAL.toHex() != tokenAddress.toHex() &&
     GUILD.toHex() != tokenAddress.toHex() &&
-    MEMBER_COUNT.toHex() != tokenAddress.toHex()
+    MEMBER_COUNT.toHex() != tokenAddress.toHex() &&
+    ESCROW.toHex() != tokenAddress.toHex()
   ) {
     // check if the DAO has an ERC20 extension and assign members balance
     internalERC20Balance(daoAddress, memberAddress);
@@ -85,12 +88,19 @@ function internalTransfer(
     member.save();
   }
 
-  // get totalUnits in the dao
+  // get total units minted for the DAO
   let balanceOfTotalUnits = bankRegistry.balanceOf(TOTAL, UNITS);
+  // get balance of units owned by the guild bank
+  let balanceOfGuildUnits = bankRegistry.balanceOf(GUILD, UNITS);
+  // get total units issued and outstanding in the DAO (not owned by guild bank)
+  let balanceOfTotalUnitsIssued =
+    balanceOfTotalUnits.minus(balanceOfGuildUnits);
+
   let dao = TributeDao.load(daoAddress.toHexString());
 
   if (dao != null) {
     dao.totalUnits = balanceOfTotalUnits.toString();
+    dao.totalUnitsIssued = balanceOfTotalUnitsIssued.toString();
 
     dao.save();
   }
@@ -103,7 +113,7 @@ export function internalERC20Balance(
   // check and get ERC20 extension address
   let erc20ExtensionId = daoAddress
     .toHex()
-    .concat("-extension-")
+    .concat('-extension-')
     .concat(ERC20_EXTENSION_ID);
   let erc20Extension = Extension.load(erc20ExtensionId);
 
@@ -121,7 +131,7 @@ export function internalERC20Balance(
 
     let tokenId = daoAddress
       .toHex()
-      .concat("-token-")
+      .concat('-token-')
       .concat(erc20Extension.extensionAddress.toHex());
 
     let token = Token.load(tokenId);
@@ -141,7 +151,7 @@ export function internalERC20Balance(
     // update holder
     let tokenHolderId = daoAddress
       .toHex()
-      .concat("-tokenholder-")
+      .concat('-tokenholder-')
       .concat(memberAddress.toHex());
 
     let tokenHolder = TokenHolder.load(tokenHolderId);
@@ -161,7 +171,7 @@ export function internalERC20Balance(
 
 export function handleNewBalance(event: NewBalance): void {
   log.info(
-    "================ NewBalance event fired. member {}, tokenAddr {}, amount {}",
+    '================ NewBalance event fired. member {}, tokenAddr {}, amount {}',
     [
       event.params.member.toHexString(),
       event.params.tokenAddr.toHexString(),
@@ -177,10 +187,9 @@ export function handleNewBalance(event: NewBalance): void {
   );
 }
 
-// event Withdraw(address member, address tokenAddr, uint256 amount);
 export function handleWithdraw(event: Withdraw): void {
   log.info(
-    "================ Withdraw event fired. account {}, tokenAddr {}, amount {}",
+    '================ Withdraw event fired. account {}, tokenAddr {}, amount {}',
     [
       event.params.account.toHexString(),
       event.params.tokenAddr.toHexString(),
@@ -189,7 +198,7 @@ export function handleWithdraw(event: Withdraw): void {
   );
 
   internalTransfer(
-    "",
+    '',
     event.address,
     event.params.account,
     event.params.tokenAddr

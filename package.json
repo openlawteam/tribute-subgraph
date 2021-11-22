@@ -1,10 +1,18 @@
 {
   "name": "tribute-subgraph",
   "version": "0.0.2",
-  "description": "",
-  "directories": {
-    "test": "test"
+  "private": true,
+  "description": "Tribute DAO Framework Subgraph",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/openlawteam/tribute-subgraph.git"
   },
+  "author": "Tribute Labs",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/openlawteam/tribute-subgraph/issues"
+  },
+  "homepage": "https://github.com/openlawteam/tribute-subgraph#readme",
   "dependencies": {
     "@openzeppelin/contracts": "^4.0.0-beta.0",
     "@truffle/hdwallet-provider": "1.2.2",
@@ -14,7 +22,7 @@
     "ganache-cli": "^6.12.1",
     "hardhat-typechain": "^0.3.5",
     "keccak256": "^1.0.0",
-    "tribute-contracts": "^1.0.1",
+    "tribute-contracts": "^2.2.3",
     "truffle": "^5.2.6",
     "ts-generator": "^0.1.1",
     "typechain": "^4.0.3",
@@ -37,34 +45,38 @@
     "ethers": "^5.1.0",
     "hardhat": "^2.1.1",
     "np": "^7.5.0",
+    "prettier": "^2.4.1",
     "rimraf": "^3.0.2",
-    "ts-node": "^9.1.1"
+    "ts-node": "^9.1.1",
+    "typescript": "^4.4.4"
   },
   "scripts": {
-    "create": "graph create openlawteam/tribute --node https://api.thegraph.com/deploy/",
-    "create-local": "graph create openlawteam/tribute --node http://127.0.0.1:8020",
-    "deploy": "graph deploy openlawteam/tribute --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/",
-    "deploy-local": "graph deploy openlawteam/tribute --ipfs http://localhost:5001 --node http://127.0.0.1:8020",
     "ganache": "node_modules/.bin/ganache-cli -s=test -g=0 --secure -u 0 -u 1 -p 7545 --networkId 1337",
-    "codegen": "graph codegen",
-    "build": "graph build",
     "compile": "rimraf build && mkdir -p build/contracts && cp -r node_modules/tribute-contracts/contracts/** build/contracts && hardhat compile",
-    "release": "np"
+    "release": "np",
+    "deploy-subgraph": "ts-node subgraph-deployer.ts",
+    "style:fix": "prettier --write 'subgraphs' 'subgraph-deployer.ts'",
+    "style": "prettier --check 'subgraphs' 'subgraph-deployer.ts'"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/openlawteam/tribute-subgraph.git"
-  },
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/openlawteam/tribute-subgraph/issues"
-  },
-  "homepage": "https://github.com/openlawteam/tribute-subgraph#readme",
   "np": {
     "branch": "main",
     "yolo": true,
     "yarn": false,
     "publish": false
+  },
+  "prettier": {
+    "overrides": [
+      {
+        "files": [
+          "*.{js,ts}"
+        ],
+        "options": {
+          "singleQuote": true,
+          "bracketSpacing": false,
+          "bracketSameLine": true,
+          "tabWidth": 2
+        }
+      }
+    ]
   }
 }

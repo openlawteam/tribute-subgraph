@@ -8,10 +8,10 @@ import "@nomiclabs/hardhat-ganache";
 
 // Ensure that we have all the environment variables we need.
 let mnemonic: string;
-if (!process.env.TRUFFLE_MNEMONIC) {
-  throw new Error("Please set your TRUFFLE_MNEMONIC in a .env file");
+if (!process.env.WALLET_SEED_PHRASE) {
+  throw new Error("Please set your WALLET_SEED_PHRASE in a .env file");
 } else {
-  mnemonic = process.env.TRUFFLE_MNEMONIC;
+  mnemonic = process.env.WALLET_SEED_PHRASE;
 }
 
 function createLocalHostConfig() {

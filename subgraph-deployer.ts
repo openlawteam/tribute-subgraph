@@ -1,306 +1,195 @@
-import fs from "fs";
-import path, { resolve } from "path";
-import { execSync } from "child_process";
-import { config as dotenvConfig } from "dotenv";
+import path, {resolve} from 'path';
+import {execSync} from 'child_process';
+import {config as dotenvConfig} from 'dotenv';
 
-import subgraphConfig from "./config/subgraph-config.json";
+dotenvConfig({path: resolve(__dirname, '.env')});
 
-dotenvConfig({ path: resolve(__dirname, ".env") });
+const GITHUB_USERNAME = process.env.GITHUB_USERNAME;
+const NETWORK = process.env.NETWORK;
 
-type DeploySettings = {
-  GITHUB_USERNAME?: string;
-  SUBGRAPH_NAME_OR_SLUG: string;
+enum NETWORKS {
+  GANACHE = 'ganache',
+  RINKEBY = 'rinkeby',
+  MAINNET = 'mainnet',
+}
+
+const SUBGRAPH_SLUGS = {
+  /**
+   * CORE
+   * Mandatory core subgraph (DaoFactory, DaoRegistry, BankExtension)
+   */
+  Core: 'core-dev',
+
+  /**
+   * ADAPTERS
+   * Add your adpater subgraphs datasource and subgraph slug
+   */
+  // CouponOnboarding: "coupon-onboarding-dev",
+
+  /**
+   * EXTENSIONS
+   * Add your extension subgraphs datasource and subgraph slug
+   */
+  // NFTExtension: "nft-extension-dev",
 };
-
-type YAMLSettings = {
-  daoFactoryAddress: string;
-  daoFactoryStartBlock: number;
-  couponOnboardingAddress?: string | undefined;
-  couponOnboardingStartBlock?: number | undefined;
-  network: string;
-};
-
-type SubgraphSettings = DeploySettings & YAMLSettings;
 
 // Execute Child Processes
 const srcDir = path.join(__dirname);
-export const exec = (cmd: string) => {
+export const exec = (cmd: string, cwdDir?: string) => {
   try {
-    return execSync(cmd, { cwd: srcDir, stdio: "inherit" });
+    return execSync(cmd, {cwd: cwdDir ?? srcDir, stdio: 'inherit'});
   } catch (e) {
     throw new Error(`Failed to run command \`${cmd}\``);
   }
 };
 
-const getYAML = ({
-  daoFactoryAddress,
-  daoFactoryStartBlock,
-  couponOnboardingAddress,
-  couponOnboardingStartBlock,
-  network,
-}: YAMLSettings): string => {
-  return ` 
-  specVersion: 0.0.2
-  description: Tribute DAO Framework Subgraph
-  repository: https://github.com/openlawteam/tribute-contracts
-  schema:
-    file: ./schema.graphql
-  dataSources:
-    # ====================================== DaoFactory ====================================
-    - kind: ethereum/contract
-      name: DaoFactory
-      network: ${network}
-      source:
-        address: "${daoFactoryAddress}"
-        abi: DaoFactory
-        startBlock: ${daoFactoryStartBlock}
-      mapping:
-        kind: ethereum/events
-        apiVersion: 0.0.4
-        language: wasm/assemblyscript
-        entities:
-          - TributeDao
-        abis:
-          - name: DaoFactory
-            file: ./build/artifacts/build/contracts/core/DaoFactory.sol/DaoFactory.json
-        eventHandlers:
-          - event: DAOCreated(address,string)
-            handler: handleDaoCreated
-        file: ./mappings/core/dao-factory-mapping.ts
+let executedDeployments: number = 0;
 
-${couponOnboardingYAML({
-  network,
-  couponOnboardingAddress,
-  couponOnboardingStartBlock,
-})}
+(function () {
+  if (!NETWORK) {
+    throw new Error('Please set a NETWORK in a .env file');
+  }
 
-  templates:
-    # ====================================== DaoRegistry ====================================
-    - kind: ethereum/contract
-      name: DaoRegistry
-      network: ${network}
-      source:
-        abi: DaoRegistry
-      mapping:
-        kind: ethereum/events
-        apiVersion: 0.0.4
-        language: wasm/assemblyscript
-        entities:
-          - Adapter
-          - Extension
-          - Proposal
-          - Member
-          - Vote
-        abis:
-          - name: DaoRegistry
-            file: ./build/artifacts/build/contracts/core/DaoRegistry.sol/DaoRegistry.json
-          - name: OnboardingContract
-            file: ./build/artifacts/build/contracts/adapters/Onboarding.sol/OnboardingContract.json
-          - name: DistributeContract
-            file: ./build/artifacts/build/contracts/adapters/Distribute.sol/DistributeContract.json
-          - name: TributeContract
-            file: ./build/artifacts/build/contracts/adapters/Tribute.sol/TributeContract.json
-          - name: TributeNFTContract
-            file: ./build/artifacts/build/contracts/adapters/TributeNFT.sol/TributeNFTContract.json
-          - name: ManagingContract
-            file: ./build/artifacts/build/contracts/adapters/Managing.sol/ManagingContract.json
-          - name: GuildKickContract
-            file: ./build/artifacts/build/contracts/adapters/GuildKick.sol/GuildKickContract.json
-          - name: FinancingContract
-            file: ./build/artifacts/build/contracts/adapters/Financing.sol/FinancingContract.json
-          - name: OffchainVotingContract
-            file: ./build/artifacts/build/contracts/adapters/voting/OffchainVoting.sol/OffchainVotingContract.json
-          - name: VotingContract
-            file: ./build/artifacts/build/contracts/adapters/voting/Voting.sol/VotingContract.json
-          - name: IVoting
-            file: ./build/artifacts/build/contracts/adapters/interfaces/IVoting.sol/IVoting.json
-          - name: ERC20Extension
-            file: ./build/artifacts/build/contracts/extensions/token/erc20/ERC20TokenExtension.sol/ERC20Extension.json
-        eventHandlers:
-          - event: SubmittedProposal(bytes32,uint256)
-            handler: handleSubmittedProposal
-          - event: SponsoredProposal(bytes32,uint256,address)
-            handler: handleSponsoredProposal
-          - event: ProcessedProposal(bytes32,uint256)
-            handler: handleProcessedProposal
-          - event: AdapterAdded(bytes32,address,uint256)
-            handler: handleAdapterAdded
-          - event: AdapterRemoved(bytes32)
-            handler: handleAdapterRemoved
-          - event: ExtensionAdded(bytes32,address)
-            handler: handleExtensionAdded
-          - event: ExtensionRemoved(bytes32)
-            handler: handleExtensionRemoved
-          - event: UpdateDelegateKey(address,address)
-            handler: handleUpdateDelegateKey
-          - event: ConfigurationUpdated(bytes32,uint256)
-            handler: handleConfigurationUpdated
-          - event: AddressConfigurationUpdated(bytes32,address)
-            handler: handleAddressConfigurationUpdated
-        file: ./mappings/core/dao-registry-mapping.ts
-    # ====================================== BankExtension ====================================
-    - kind: ethereum/contract
-      name: BankExtension
-      network: ${network}
-      source:
-        abi: BankExtension
-      mapping:
-        kind: ethereum/events
-        apiVersion: 0.0.4
-        language: wasm/assemblyscript
-        entities:
-          - TokenHolder
-          - Token
-          - Member
-        abis:
-          - name: BankExtension
-            file: ./build/artifacts/build/contracts/extensions/bank/Bank.sol/BankExtension.json
-          - name: ERC20Extension
-            file: ./build/artifacts/build/contracts/extensions/token/erc20/ERC20TokenExtension.sol/ERC20Extension.json
-        eventHandlers:
-          - event: NewBalance(address,address,uint160)
-            handler: handleNewBalance
-          - event: Withdraw(address,address,uint160)
-            handler: handleWithdraw
-        file: ./mappings/extensions/bank-extension-mapping.ts
-    # ====================================== NFTExtension ====================================
-    - kind: ethereum/contract
-      name: NFTExtension
-      network: ${network}
-      source:
-        abi: NFTExtension
-      mapping:
-        kind: ethereum/events
-        apiVersion: 0.0.4
-        language: wasm/assemblyscript
-        entities:
-          - NFTCollection
-          - NFT
-        abis:
-          - name: NFTExtension
-            file: ./build/artifacts/build/contracts/extensions/nft/NFT.sol/NFTExtension.json
-        eventHandlers:
-          - event: CollectedNFT(address,uint256)
-            handler: handleCollectedNFT
-          - event: TransferredNFT(address,uint256,address,address)
-            handler: handleTransferredNFT
-          - event: WithdrawnNFT(address,uint256,address)
-            handler: handleWithdrawnNFT
-        file: ./mappings/extensions/nft-extension-mapping.ts
+  if (!GITHUB_USERNAME && NETWORK !== NETWORKS.MAINNET) {
+    throw new Error('Please set your GITHUB_USERNAME in a .env file');
+  }
 
-        
-`;
-};
-
-type CouponOnboardingYAML = {
-  network: string;
-  couponOnboardingAddress: string | undefined;
-  couponOnboardingStartBlock: number | undefined;
-};
-
-function couponOnboardingYAML({
-  network,
-  couponOnboardingAddress,
-  couponOnboardingStartBlock,
-}: CouponOnboardingYAML) {
-  if (!couponOnboardingAddress) return ``;
-
-  return `
-    # ====================================== Adapter: CouponOnboarding ====================================
-    - kind: ethereum/contract
-      name: CouponOnboarding
-      network: ${network}
-      source:
-        address: "${couponOnboardingAddress}"
-        abi: CouponOnboardingContract
-        startBlock: ${couponOnboardingStartBlock}
-      mapping:
-        kind: ethereum/events
-        apiVersion: 0.0.4
-        language: wasm/assemblyscript
-        entities:
-          - Coupon
-        abis:
-          - name: CouponOnboardingContract
-            file: ./build/artifacts/build/contracts/adapters/CouponOnboarding.sol/CouponOnboardingContract.json
-        eventHandlers:
-          - event: CouponRedeemed(address,uint256,address,uint256)
-            handler: handleCouponRedeemed
-        file: ./mappings/adapters/coupon-onboarding-mapping.ts
-  `;
-}
-
-(function() {
   // Compile the solidity contracts
-  console.log("📦 ### 1/3 Compiling the smart contracts...");
+  console.log('⛓  ### Compiling the smart contracts...');
   exec(`npm run compile`);
 
-  // Create the graph code generation files
-  console.log("📦 ### 2/3 Creating the graph scheme...");
-  exec(`graph codegen`);
+  Object.entries(SUBGRAPH_SLUGS).forEach(
+    async ([datasourceName, subgraphSlug], index) => {
+      try {
+        // Display deployment index
+        console.log(
+          `✨ ### DEPLOYMENT ${index + 1}/${
+            Object.keys(SUBGRAPH_SLUGS).length
+          }...`
+        );
+        // Define the subgraph dataSource path
+        const datasourcePath = `${resolve(
+          __dirname,
+          'subgraphs',
+          datasourceName
+        )}`;
 
-  // Building the graph scheme
-  console.log("📦 ### 3/3 Building the graph scheme...");
-  exec(`graph build`);
+        // 📦 ### 1/2 Create the graph code generation files
+        taskGraphCodegen(datasourceName, datasourcePath);
 
-  console.log("📦 ### Build complete, preparing deployment...");
+        // 📦 ### 2/2 Building the graph scheme
+        taskGraphBuild(datasourceName, datasourcePath);
 
-  let executedDeployments: number = 0;
+        // 🏎  ### Deploy subgraph <SUBGRAPH_SLUG>
+        if (NETWORK === NETWORKS.MAINNET) {
+          taskDeployToNetwork(datasourceName, datasourcePath, subgraphSlug);
+        } else if (NETWORK === NETWORKS.RINKEBY) {
+          taskDeployToHosted(datasourcePath, subgraphSlug);
+        } else if (NETWORK === NETWORKS.GANACHE) {
+          taskDeployToLocal(datasourcePath, subgraphSlug);
+        }
+
+        console.log('🦾 ### Done.');
+
+        // Increment deployment counter
+        executedDeployments++;
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  );
 
   console.log(
-    `==== READY TO DEPLOY ${subgraphConfig.length} SUBGRAPHS... ====
-    
+    `${
+      executedDeployments === 0 ? '😵' : '🎉'
+    } ### ${executedDeployments} Deployment(s) Successful!`
+  );
+})();
+
+/**
+ * taskGraphCodegen()
+ *
+ * Runs the code generation
+ * @param datasourceName
+ * @param datasourcePath
+ */
+function taskGraphCodegen(datasourceName: string, datasourcePath: string) {
+  // Create the graph code generation files
+  console.log('📦 ### 1/2 Creating the graph scheme for...', datasourceName);
+  exec(`graph codegen`, datasourcePath);
+}
+
+/**
+ * taskGraphBuild()
+ *
+ * Builds the graph scheme
+ * @param datasourceName
+ * @param datasourcePath
+ */
+function taskGraphBuild(datasourceName: string, datasourcePath: string) {
+  // Building the graph scheme
+  console.log('📦 ### 2/2 Building the graph scheme for...', datasourceName);
+  exec(`graph build`, datasourcePath);
+}
+
+/**
+ * taskDeployToNetwork()
+ *
+ * Deploys subgraph to The Graph decentralized service
+ * @param datasourceName
+ * @param datasourcePath
+ * @param subgraphSlug
+ */
+function taskDeployToNetwork(
+  datasourceName: string,
+  datasourcePath: string,
+  subgraphSlug: string
+) {
+  console.log(
+    `
+    ==== READY TO DEPLOY SUBGRAPH... ${datasourceName} ====
+    ⚠️  IMPORTANT: When prompted, enter a version label for the subgraph!
     `
   );
 
-  subgraphConfig.forEach((subgraph: SubgraphSettings, index: number) => {
-    console.log(`📦 ### DEPLOYMENT ${index + 1}/${subgraphConfig.length}...
-    
-    `);
+  // Deploy subgraph <SUBGRAPH_SLUG>
+  console.log('🏎  ### Deploying subgraph...');
 
-    console.log("🛠 ### Preparing subgraph template for...");
-    console.log(`
-    GITHUB_USERNAME: ${subgraph.GITHUB_USERNAME || "n/a"}
-    SUBGRAPH_NAME_OR_SLUG: ${subgraph.SUBGRAPH_NAME_OR_SLUG}
-    Network: ${subgraph.network}
-    Address: ${subgraph.daoFactoryAddress}
-    Start Block: ${subgraph.daoFactoryStartBlock}
-    `);
+  exec(
+    `graph auth --studio ${process.env.GRAPH_DEPLOYMENT_KEY}`,
+    datasourcePath
+  );
+  exec(`graph deploy --studio ${subgraphSlug}`, datasourcePath);
+}
 
-    subgraph.couponOnboardingAddress &&
-      console.log(
-        `CouponOnboarding: Address - ${subgraph.couponOnboardingAddress}, Start Block - ${subgraph.couponOnboardingStartBlock}`
-      );
+/**
+ * taskDeployToHosted()
+ *
+ * Deploys the subgraph to The Graph hosted service
+ * @param datasourcePath
+ * @param subgraphSlug
+ */
+function taskDeployToHosted(datasourcePath: string, subgraphSlug: string) {
+  exec(
+    `graph deploy --access-token ${process.env.GRAPH_ACCESS_TOKEN} --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ ${GITHUB_USERNAME}/${subgraphSlug}`,
+    datasourcePath
+  );
+}
 
-    // Write YAML file
-    fs.writeFileSync(
-      "subgraph.yaml",
-      getYAML({
-        daoFactoryAddress: subgraph.daoFactoryAddress,
-        daoFactoryStartBlock: subgraph.daoFactoryStartBlock,
-        couponOnboardingAddress: subgraph.couponOnboardingAddress,
-        couponOnboardingStartBlock: subgraph.couponOnboardingStartBlock,
-        network: subgraph.network,
-      })
-    );
-
-    // Deploy subgraph <GITHUB_USERNAME/SUBGRAPH_NAME_OR_SLUG>
-    console.log("🚗 ### Deploying subgraph...");
-
-    if (subgraph.network === "mainnet") {
-      exec(`graph auth --studio ${process.env.GRAPH_DEPLOYMENT_KEY}`);
-      exec(`graph deploy --studio ${subgraph.SUBGRAPH_NAME_OR_SLUG}`);
-    } else {
-      exec(
-        `graph deploy --access-token ${process.env.GRAPH_ACCESS_TOKEN} --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ ${subgraph.GITHUB_USERNAME}/${subgraph.SUBGRAPH_NAME_OR_SLUG}`
-      );
-    }
-
-    console.log("👏 ### Done.");
-
-    // Increment deployment counter
-    executedDeployments++;
-  });
-
-  console.log(`🎉 ### ${executedDeployments} Deployment(s) Successful!`);
-})();
+/**
+ * taskDeployToLocal()
+ *
+ * Allocates the subgraph name in the Graph Node and deploys the subgraphs to your local Graph Node
+ * @param datasourcePath
+ * @param subgraphSlug
+ */
+function taskDeployToLocal(datasourcePath: string, subgraphSlug: string) {
+  exec(
+    `graph create tribute/${subgraphSlug} --node http://127.0.0.1:8020`,
+    datasourcePath
+  );
+  exec(
+    `graph deploy tribute/${subgraphSlug} --ipfs http://localhost:5001 --node http://127.0.0.1:8020`,
+    datasourcePath
+  );
+}

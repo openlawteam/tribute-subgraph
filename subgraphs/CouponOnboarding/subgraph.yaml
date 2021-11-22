@@ -1,0 +1,26 @@
+specVersion: 0.0.2
+description: Tribute DAO Framework Subgraph (CouponOnboarding)
+repository: https://github.com/openlawteam/tribute-subgraph
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum/contract
+    name: CouponOnboarding
+    network: mainnet
+    source:
+      address: "0x3d3CaeEa18A3b464859253619e26F1C76F12e31A"
+      abi: CouponOnboarding
+      startBlock: 9460062
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      entities:
+        - Coupon
+      abis:
+        - name: CouponOnboarding
+          file: ../../build/artifacts/build/contracts/adapters/CouponOnboarding.sol/CouponOnboardingContract.json
+      eventHandlers:
+        - event: CouponRedeemed(address,uint256,address,uint256)
+          handler: handleCouponRedeemed
+      file: ./mapping.ts
