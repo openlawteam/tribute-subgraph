@@ -24,13 +24,13 @@ const SUBGRAPH_SLUGS = {
    * ADAPTERS
    * Add your adpater subgraphs datasource and subgraph slug
    */
-  // CouponOnboarding: "coupon-onboarding-dev",
+  // CouponOnboarding: 'coupon-onboarding-dev',
 
   /**
    * EXTENSIONS
    * Add your extension subgraphs datasource and subgraph slug
    */
-  // NFTExtension: "nft-extension-dev",
+  // NFTExtension: 'nft-extension-dev',
 };
 
 // Execute Child Processes
