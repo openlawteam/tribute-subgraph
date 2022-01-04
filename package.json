@@ -51,7 +51,7 @@
     "typescript": "^4.4.4"
   },
   "scripts": {
-    "ganache": "node_modules/.bin/ganache-cli -s=test -g=0 --secure -u 0 -u 1 -p 7545 --networkId 1337",
+    "ganache": "node_modules/.bin/ganache-cli -s=test -g=0 --secure -u 0 -u 1 -p 7545 --networkId 1337 --chainId 1337",
     "compile": "rimraf build && mkdir -p build/contracts && cp -r node_modules/tribute-contracts/contracts/** build/contracts && hardhat compile",
     "release": "np",
     "deploy-subgraph": "ts-node subgraph-deployer.ts",
