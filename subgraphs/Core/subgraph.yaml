@@ -1,6 +1,6 @@
 specVersion: 0.0.2
 description: Tribute DAO Framework Subgraph (Core)
-repository: https://github.com/openlawteam/tribute-contracts
+repository: https://github.com/openlawteam/tribute-subgraph
 schema:
   file: ./schema.graphql
 dataSources:
