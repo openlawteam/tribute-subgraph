@@ -5,12 +5,12 @@ import {config as dotenvConfig} from 'dotenv';
 dotenvConfig({path: resolve(__dirname, '.env')});
 
 const GITHUB_USERNAME = process.env.GITHUB_USERNAME;
-const NETWORK = process.env.NETWORK;
+const GRAPH_NODE_TYPE = process.env.GRAPH_NODE_TYPE;
 
-enum NETWORKS {
-  GANACHE = 'ganache',
-  RINKEBY = 'rinkeby',
-  MAINNET = 'mainnet',
+enum GRAPH_NODE {
+  LOCAL = 'local',
+  HOST = 'host',
+  NETWORK = 'network',
 }
 
 const SUBGRAPH_SLUGS = {
@@ -46,11 +46,11 @@ export const exec = (cmd: string, cwdDir?: string) => {
 let executedDeployments: number = 0;
 
 (function () {
-  if (!NETWORK) {
-    throw new Error('Please set a NETWORK in a .env file');
+  if (!GRAPH_NODE_TYPE) {
+    throw new Error('Please set a GRAPH_NODE_TYPE in a .env file');
   }
 
-  if (!GITHUB_USERNAME && NETWORK !== NETWORKS.MAINNET) {
+  if (!GITHUB_USERNAME && GRAPH_NODE_TYPE !== GRAPH_NODE.LOCAL) {
     throw new Error('Please set your GITHUB_USERNAME in a .env file');
   }
 
@@ -81,12 +81,16 @@ let executedDeployments: number = 0;
         taskGraphBuild(datasourceName, datasourcePath);
 
         // 🏎  ### Deploy subgraph <SUBGRAPH_SLUG>
-        if (NETWORK === NETWORKS.MAINNET) {
-          taskDeployToNetwork(datasourceName, datasourcePath, subgraphSlug);
-        } else if (NETWORK === NETWORKS.RINKEBY) {
-          taskDeployToHosted(datasourcePath, subgraphSlug);
-        } else if (NETWORK === NETWORKS.GANACHE) {
-          taskDeployToLocal(datasourcePath, subgraphSlug);
+        switch (GRAPH_NODE_TYPE) {
+          case GRAPH_NODE.NETWORK:
+            taskDeployToNetwork(datasourceName, datasourcePath, subgraphSlug);
+            break;
+          case GRAPH_NODE.HOST:
+            taskDeployToHosted(datasourcePath, subgraphSlug);
+            break;
+          case GRAPH_NODE.LOCAL:
+          default:
+            taskDeployToLocal(datasourcePath, subgraphSlug);
         }
 
         console.log('🦾 ### Done.');
@@ -189,7 +193,7 @@ function taskDeployToLocal(datasourcePath: string, subgraphSlug: string) {
     datasourcePath
   );
   exec(
-    `graph deploy tribute/${subgraphSlug} --ipfs http://localhost:5001 --node http://127.0.0.1:8020`,
+    `graph deploy tribute/${subgraphSlug} --ipfs http://127.0.0.1:5001 --node http://127.0.0.1:8020`,
     datasourcePath
   );
 }

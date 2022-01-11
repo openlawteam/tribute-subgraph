@@ -33,7 +33,7 @@ const config = {
     localhost: createLocalHostConfig(),
   },
   solidity: {
-    version: "0.8.0",
+    version: "0.8.9", // using the same version as tribute-contracts
     settings: {
       // https://hardhat.org/hardhat-network/#solidity-optimizer-support
       optimizer: {
