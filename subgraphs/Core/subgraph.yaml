@@ -7,11 +7,11 @@ dataSources:
   # ====================== DaoFactory ======================
   - kind: ethereum/contract
     name: DaoFactory
-    network: rinkeby
+    network: mainnet
     source:
-      address: "0xb7E3D42d146da6873BB1c03c2c46F17953298c6A"
+      address: "0x5Df871dC42Acf0c20B513B7D31e9a64146E3d3e6"
       abi: DaoFactory
-      startBlock: 9972859
+      startBlock: 146393
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4
@@ -30,7 +30,7 @@ templates:
   # ====================== DaoRegistry ======================
   - kind: ethereum/contract
     name: DaoRegistry
-    network: rinkeby
+    network: mainnet
     source:
       abi: DaoRegistry
     mapping:
@@ -79,7 +79,7 @@ templates:
   # ====================== BankExtension ======================
   - kind: ethereum/contract
     name: BankExtension
-    network: rinkeby
+    network: mainnet
     source:
       abi: BankExtension
     mapping:

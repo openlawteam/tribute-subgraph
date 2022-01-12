@@ -8,9 +8,9 @@ dataSources:
     name: CouponOnboarding
     network: mainnet
     source:
-      address: "0x3d3CaeEa18A3b464859253619e26F1C76F12e31A"
+      address: "0x5520AB94f584cd283535aa40D3537d2d7C7Bab45"
       abi: CouponOnboarding
-      startBlock: 9460062
+      startBlock: 146457
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4
