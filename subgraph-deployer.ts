@@ -4,8 +4,10 @@ import {config as dotenvConfig} from 'dotenv';
 
 dotenvConfig({path: resolve(__dirname, '.env')});
 
-const GITHUB_USERNAME = process.env.GITHUB_USERNAME;
 const GRAPH_NODE_TYPE = process.env.GRAPH_NODE_TYPE;
+const GITHUB_USERNAME = process.env.GITHUB_USERNAME;
+const GRAPH_ACCESS_TOKEN = process.env.GRAPH_ACCESS_TOKEN;
+const GRAPH_DEPLOYMENT_KEY = process.env.GRAPH_DEPLOYMENT_KEY;
 
 enum GRAPH_NODE {
   LOCAL = 'local',
@@ -50,8 +52,18 @@ let executedDeployments: number = 0;
     throw new Error('Please set a GRAPH_NODE_TYPE in a .env file');
   }
 
-  if (!GITHUB_USERNAME && GRAPH_NODE_TYPE !== GRAPH_NODE.LOCAL) {
-    throw new Error('Please set your GITHUB_USERNAME in a .env file');
+  if (GRAPH_NODE_TYPE === GRAPH_NODE.HOST) {
+    if (!GITHUB_USERNAME) {
+      throw new Error('Please set your GITHUB_USERNAME in a .env file');
+    }
+
+    if (!GRAPH_ACCESS_TOKEN) {
+      throw new Error('Please set your GRAPH_ACCESS_TOKEN in a .env file');
+    }
+  }
+
+  if (GRAPH_NODE_TYPE === GRAPH_NODE.NETWORK && !GRAPH_DEPLOYMENT_KEY) {
+    throw new Error('Please set your GRAPH_DEPLOYMENT_KEY in a .env file');
   }
 
   // Compile the solidity contracts
@@ -159,10 +171,7 @@ function taskDeployToNetwork(
   // Deploy subgraph <SUBGRAPH_SLUG>
   console.log('🏎  ### Deploying subgraph...');
 
-  exec(
-    `graph auth --studio ${process.env.GRAPH_DEPLOYMENT_KEY}`,
-    datasourcePath
-  );
+  exec(`graph auth --studio ${GRAPH_DEPLOYMENT_KEY}`, datasourcePath);
   exec(`graph deploy --studio ${subgraphSlug}`, datasourcePath);
 }
 
@@ -175,7 +184,7 @@ function taskDeployToNetwork(
  */
 function taskDeployToHosted(datasourcePath: string, subgraphSlug: string) {
   exec(
-    `graph deploy --access-token ${process.env.GRAPH_ACCESS_TOKEN} --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ ${GITHUB_USERNAME}/${subgraphSlug}`,
+    `graph deploy --access-token ${GRAPH_ACCESS_TOKEN} --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ ${GITHUB_USERNAME}/${subgraphSlug}`,
     datasourcePath
   );
 }
