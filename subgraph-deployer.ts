@@ -4,13 +4,15 @@ import {config as dotenvConfig} from 'dotenv';
 
 dotenvConfig({path: resolve(__dirname, '.env')});
 
+const GRAPH_NODE_TYPE = process.env.GRAPH_NODE_TYPE;
 const GITHUB_USERNAME = process.env.GITHUB_USERNAME;
-const NETWORK = process.env.NETWORK;
+const GRAPH_ACCESS_TOKEN = process.env.GRAPH_ACCESS_TOKEN;
+const GRAPH_DEPLOYMENT_KEY = process.env.GRAPH_DEPLOYMENT_KEY;
 
-enum NETWORKS {
-  GANACHE = 'ganache',
-  RINKEBY = 'rinkeby',
-  MAINNET = 'mainnet',
+enum GRAPH_NODE {
+  LOCAL = 'local',
+  HOST = 'host',
+  NETWORK = 'network',
 }
 
 const SUBGRAPH_SLUGS = {
@@ -46,12 +48,22 @@ export const exec = (cmd: string, cwdDir?: string) => {
 let executedDeployments: number = 0;
 
 (function () {
-  if (!NETWORK) {
-    throw new Error('Please set a NETWORK in a .env file');
+  if (!GRAPH_NODE_TYPE) {
+    throw new Error('Please set a GRAPH_NODE_TYPE in a .env file');
   }
 
-  if (!GITHUB_USERNAME && NETWORK !== NETWORKS.MAINNET) {
-    throw new Error('Please set your GITHUB_USERNAME in a .env file');
+  if (GRAPH_NODE_TYPE === GRAPH_NODE.HOST) {
+    if (!GITHUB_USERNAME) {
+      throw new Error('Please set your GITHUB_USERNAME in a .env file');
+    }
+
+    if (!GRAPH_ACCESS_TOKEN) {
+      throw new Error('Please set your GRAPH_ACCESS_TOKEN in a .env file');
+    }
+  }
+
+  if (GRAPH_NODE_TYPE === GRAPH_NODE.NETWORK && !GRAPH_DEPLOYMENT_KEY) {
+    throw new Error('Please set your GRAPH_DEPLOYMENT_KEY in a .env file');
   }
 
   // Compile the solidity contracts
@@ -81,12 +93,16 @@ let executedDeployments: number = 0;
         taskGraphBuild(datasourceName, datasourcePath);
 
         // 🏎  ### Deploy subgraph <SUBGRAPH_SLUG>
-        if (NETWORK === NETWORKS.MAINNET) {
-          taskDeployToNetwork(datasourceName, datasourcePath, subgraphSlug);
-        } else if (NETWORK === NETWORKS.RINKEBY) {
-          taskDeployToHosted(datasourcePath, subgraphSlug);
-        } else if (NETWORK === NETWORKS.GANACHE) {
-          taskDeployToLocal(datasourcePath, subgraphSlug);
+        switch (GRAPH_NODE_TYPE) {
+          case GRAPH_NODE.NETWORK:
+            taskDeployToNetwork(datasourceName, datasourcePath, subgraphSlug);
+            break;
+          case GRAPH_NODE.HOST:
+            taskDeployToHosted(datasourcePath, subgraphSlug);
+            break;
+          case GRAPH_NODE.LOCAL:
+          default:
+            taskDeployToLocal(datasourcePath, subgraphSlug);
         }
 
         console.log('🦾 ### Done.');
@@ -155,10 +171,7 @@ function taskDeployToNetwork(
   // Deploy subgraph <SUBGRAPH_SLUG>
   console.log('🏎  ### Deploying subgraph...');
 
-  exec(
-    `graph auth --studio ${process.env.GRAPH_DEPLOYMENT_KEY}`,
-    datasourcePath
-  );
+  exec(`graph auth --studio ${GRAPH_DEPLOYMENT_KEY}`, datasourcePath);
   exec(`graph deploy --studio ${subgraphSlug}`, datasourcePath);
 }
 
@@ -171,7 +184,7 @@ function taskDeployToNetwork(
  */
 function taskDeployToHosted(datasourcePath: string, subgraphSlug: string) {
   exec(
-    `graph deploy --access-token ${process.env.GRAPH_ACCESS_TOKEN} --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ ${GITHUB_USERNAME}/${subgraphSlug}`,
+    `graph deploy --access-token ${GRAPH_ACCESS_TOKEN} --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ ${GITHUB_USERNAME}/${subgraphSlug}`,
     datasourcePath
   );
 }
@@ -189,7 +202,7 @@ function taskDeployToLocal(datasourcePath: string, subgraphSlug: string) {
     datasourcePath
   );
   exec(
-    `graph deploy tribute/${subgraphSlug} --ipfs http://localhost:5001 --node http://127.0.0.1:8020`,
+    `graph deploy tribute/${subgraphSlug} --ipfs http://127.0.0.1:5001 --node http://127.0.0.1:8020`,
     datasourcePath
   );
 }

@@ -52,21 +52,24 @@ const SUBGRAPH_SLUGS = {
 };
 ```
 
-In `.env` (create `.env` file if there isn't one already created), add your wallet seed phrase (for the hardhat contract compilation), network, GitHub username, graph access token from your Hosted Service [dashboard](https://thegraph.com/hosted-service/dashboard) and the deployment key from your Subgraph Studio account:
+In `.env` (create `.env` file if there isn't one already created), add your wallet seed phrase (for the hardhat contract compilation), graph node type, GitHub username, graph access token from your Hosted Service [dashboard](https://thegraph.com/hosted-service/dashboard) and the deployment key from your Subgraph Studio account:
 
 ```
-# The ethereum network to deploy the subgraph.
-NETWORK=...
+# Set the type of the graph node you want to use to deploy the subgraph: `local`, `host`, `network`.
+# `local`: Deploys the subgraphs to your local Graph Node (see "Local Development Graph Setup" below)
+# `host`: Deploys the subgraph to The Graph hosted service
+# `network`: Deploys subgraph to The Graph decentralized service (`mainnet` only)
+GRAPH_NODE_TYPE=local
 
-# Your GitHub username to deploy the subgraph to the hosted service.
+# Your GitHub username to deploy the subgraph to the graph node type: `host`.
 GITHUB_USERNAME=...
 
-# The Graph API Access Token that will be used to deploy the Subgraph
-# to the hosted service (rinkeby/testnet).
+# The Graph API Access Token that will be used to deploy the subgraph to the
+# graph node type: `host`.
 GRAPH_ACCESS_TOKEN=...
 
-# The Graph API Deployment Key that will be used to deploy the Subgraph
-# to the decentralized service (mainnet).
+# The Graph API Deployment Key that will be used to deploy the subgraph to the
+# decentralized graph node type: `network`.
 GRAPH_DEPLOYMENT_KEY=...
 
 # The wallet mnemonic/seed phrase is a 12 word string which is used to create

@@ -61,10 +61,10 @@ can access these via:
 Once this is up and running, you can create and deploy your subgraph to the running Graph Node. To do this, in another terminal window from the project root directory:
 
 - `npm ci` to install dependencies
-- set the `NETWORK` variable in `.env` to `ganache`:
+- set the `GRAPH_NODE_TYPE` variable in `.env` to `local`:
 
 ```
-NETWORK=ganache
+GRAPH_NODE_TYPE=local
 ```
 
 Then, run the subgraph deployer `npm run deploy-subgraph` to allocate the subgraph names in the Graph Node and deploy the subgraphs to your local Graph Node.
