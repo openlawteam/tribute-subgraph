@@ -24,7 +24,7 @@ const SUBGRAPH_SLUGS = {
 
   /**
    * ADAPTERS
-   * Add your adpater subgraphs datasource and subgraph slug
+   * Add your adapter subgraphs datasource and subgraph slug
    */
   // CouponOnboarding: 'coupon-onboarding-dev',
 
